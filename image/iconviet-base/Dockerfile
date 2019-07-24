@@ -1,19 +1,2 @@
-FROM phusion/baseimage:0.11
+FROM agiper/base
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
-
-ENV DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update && \
-	apt-get install -y --no-install-recommends \
-		wget \
-		sudo \
-		nano \
-		curl \
-		iputils-ping &&\
-	apt-get autoremove -y && \
-	apt-get clean && \
-	/usr/sbin/enable_insecure_key && \
-	mv /sbin/my_init /entrypoint.sh && \
-	rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/*
-
-ENTRYPOINT ["/entrypoint.sh", "--"]

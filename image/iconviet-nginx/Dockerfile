@@ -1,2 +1,2 @@
-FROM nginx:1.17.1
+FROM agiper/nginx
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
