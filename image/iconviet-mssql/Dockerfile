@@ -1,0 +1,23 @@
+FROM iconviet/base
+MAINTAINER Tom Nuen <tomnuen@iconviet.io>
+
+ENV MSSQL_VERSION=14.0.3162.1-1
+
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add - && \
+	add-apt-repository "$(curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list)" && \
+	add-apt-repository "$(curl https://packages.microsoft.com/config/ubuntu/18.04/mssql-server-2017.list)" && \
+	apt-get update && \
+	export ACCEPT_EULA=Y && \
+	apt-get install -y \
+		mssql-tools \
+		unixodbc-dev \
+		mssql-server=${MSSQL_VERSION} && \
+	apt-get autoremove -y && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/*
+
+ENV ACCEPT_EULA=Y
+ENV MSSQL_PID=Enterprise
+ENV SA_PASSWORD=P@ssw0rd
+
+CMD ["/opt/mssql/bin/sqlservr"]
