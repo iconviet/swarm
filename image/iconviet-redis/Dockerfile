@@ -1,4 +1,4 @@
-FROM agiper/redis
+FROM agiper/redis:latest
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
 
 COPY redis.conf /etc/redis/
