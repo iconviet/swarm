@@ -45,13 +45,13 @@ services:
     environment:
       - ENVIRONMENT=development
     volumes:
-      - ~/volume/redis:/etc/redis
+      - ~/volume/redis:/var/lib/redis
     deploy:
       resources:
         reservations:
-          memory: 512M
+          memory: 256M
         limits:
-          memory: 1024M
+          memory: 512M
       restart_policy:
         delay: 1m
         window: 1m
@@ -75,7 +75,9 @@ services:
     deploy:
       resources:
         reservations:
-          memory: 128M
+          memory: 32M
+        limits:
+          memory: 64M
       restart_policy:
         delay: 1m
         window: 1m
@@ -86,7 +88,7 @@ services:
 
   # MSSQL
   mssql:
-    image: agiper/mssql:latest
+    image: iconviet/mssql:latest
     networks:
       - iconviet-nodedeve
     ports:
@@ -109,16 +111,16 @@ services:
         constraints:
           - node.role == manager
 
-  #API
+  #SERVICE_API
   service_api:
     depends_on:
       - redis
       - mssql
-    image: iconviet.azurecr.io/development_iconlook_service_api
+    image: iconviet.azurecr.io/nodedeve_iconlook_service_api
     networks:
       iconviet-nodedeve:
         aliases:
-          - development_iconlook_service_api
+          - nodedeve_iconlook_service_api
     ports:
       - "80"
     environment:
@@ -128,9 +130,9 @@ services:
       mode: replicated
       resources:
         reservations:
-          memory: 1024M
+          memory: 256M
         limits:
-          memory: 4096M
+          memory: 512M
       restart_policy:
         delay: 1m
         window: 1m
@@ -145,16 +147,16 @@ services:
         constraints:
           - node.role == manager
 
-  #WEB
+  #SERVICE_API
   service_web:
     depends_on:
       - redis
       - mssql
-    image: iconviet.azurecr.io/development_iconlook_service_web
+    image: iconviet.azurecr.io/nodedeve_iconlook_service_web
     networks:
       iconviet-nodedeve:
         aliases:
-          - development_iconlook_service_web
+          - nodedeve_iconlook_service_web
     ports:
       - "80"
     environment:
@@ -164,9 +166,9 @@ services:
       mode: replicated
       resources:
         reservations:
-          memory: 1024M
+          memory: 256M
         limits:
-          memory: 4096M
+          memory: 512M
       restart_policy:
         delay: 1m
         window: 1m
