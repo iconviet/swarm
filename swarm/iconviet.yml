@@ -1,31 +1,20 @@
 version: "3.4"
 
 networks:
-  testing:
-    external: true
-  staging:
-    external: true
-  production:
-    external: true
-  development:
-    external: true
-  infrastructure:
+  iconviet:
     external: true
 
 services:
   # NGINX
   nginx:
+    depends_on:
+      - teamcity
+      - portainer
     image: iconviet/nginx:latest
     networks:
-      - testing
-      - staging
-      - production
-      - development
-      - infrastructure
+      - iconviet
     ports:
       - "80:80"
-      - "81:81"
-      - "82:82"
     volumes:
       - ~/volume/nginx:/etc/nginx
       - ~/volume/nginx/www:/etc/nginx/www
@@ -47,38 +36,17 @@ services:
   mssql:
     image: iconviet/mssql:latest
     networks:
-      - infrastructure
+      - iconviet
     ports:
       - "1433"
     volumes:
-      - ~/volume/mssql/data/infrastructure:/var/opt/mssql/data
+      - ~/volume/mssql/data:/var/opt/mssql/data
     deploy:
       resources:
         reservations:
           memory: 1024M
         limits:
-          memory: 4096M
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
-
-  # DOCKER
-  docker:
-    image: iconviet/docker:latest
-    networks:
-      - infrastructure
-    ports:
-      - "5000:5000"
-    volumes:
-      - ~/volume/docker:/var/lib/registry
-    deploy:
-      resources:
-        reservations:
-          memory: 128M
+          memory: 2048M
       restart_policy:
         delay: 1m
         window: 1m
@@ -93,7 +61,7 @@ services:
       - mssql
     image: iconviet/teamcity:latest
     networks:
-      - infrastructure
+      - iconviet
     ports:
       - "8111"
     volumes:
@@ -104,7 +72,7 @@ services:
         reservations:
           memory: 1024M
         limits:
-          memory: 4096M
+          memory: 2048M
       restart_policy:
         delay: 1m
         window: 1m
@@ -117,32 +85,11 @@ services:
   portainer:
     image: iconviet/portainer:latest
     networks:
-      - infrastructure
+      - iconviet
     ports:
       - "9000"
     volumes:
       - ~/volume/portainer:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-    deploy:
-      resources:
-        reservations:
-          memory: 128M
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
-
-# VISUALIZER
-  visualizer:
-    image: iconviet/visualizer:latest
-    networks:
-      - infrastructure
-    ports:
-      - "8080"
-    volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
       resources:

@@ -1,0 +1,177 @@
+version: "3.4"
+
+networks:
+  iconviet-nodedeve:
+    external: true
+
+services:
+  # NGINX
+  nginx:
+    depends_on:
+      - portainer
+      - service_api
+      - service_web
+    image: iconviet/nginx:latest
+    networks:
+      - iconviet-nodedeve
+    ports:
+      - "80:80"
+      - "81:81"
+    volumes:
+      - ~/volume/nginx:/etc/nginx
+      - ~/volume/nginx/www:/etc/nginx/www
+    deploy:
+      resources:
+        reservations:
+          memory: 256M
+        limits:
+          memory: 512M
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+
+  # REDIS
+  redis:
+    image: iconviet/redis:latest
+    networks:
+      - iconviet-nodedeve
+    ports:
+      - "6379"
+    environment:
+      - ENVIRONMENT=development
+    deploy:
+      resources:
+        reservations:
+          memory: 512M
+        limits:
+          memory: 1024M
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+
+  # PORTAINER
+  portainer:
+    image: iconviet/portainer:latest
+    networks:
+      - iconviet-nodedeve
+    ports:
+      - "9000"
+    volumes:
+      - ~/volume/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      resources:
+        reservations:
+          memory: 128M
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+
+  # MSSQL
+  mssql:
+    image: agiper/mssql:latest
+    networks:
+      - iconviet-nodedeve
+    ports:
+      - "1433"
+    environment:
+      - ENVIRONMENT=development
+    volumes:
+      - ~/volume/mssql/data:/var/opt/mssql/data
+    deploy:
+      resources:
+        reservations:
+          memory: 1024M
+        limits:
+          memory: 2048M
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+
+  #API
+  service_api:
+    depends_on:
+      - redis
+      - mssql
+    image: iconviet.azurecr.io/development_iconlook_service_api
+    networks:
+      iconviet-nodedeve:
+        aliases:
+          - development_iconlook_service_api
+    ports:
+      - "80"
+    environment:
+      - ENVIRONMENT=development
+    deploy:
+      replicas: 1
+      mode: replicated
+      resources:
+        reservations:
+          memory: 1024M
+        limits:
+          memory: 4096M
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      update_config:
+        delay: 10s
+        monitor: 60s
+        parallelism: 1
+        max_failure_ratio: 0.3
+        failure_action: continue
+      placement:
+        constraints:
+          - node.role == manager
+
+  #WEB
+  service_web:
+    depends_on:
+      - redis
+      - mssql
+    image: iconviet.azurecr.io/development_iconlook_service_web
+    networks:
+      iconviet-nodedeve:
+        aliases:
+          - development_iconlook_service_web
+    ports:
+      - "80"
+    environment:
+      - ENVIRONMENT=development
+    deploy:
+      replicas: 1
+      mode: replicated
+      resources:
+        reservations:
+          memory: 1024M
+        limits:
+          memory: 4096M
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      update_config:
+        delay: 10s
+        monitor: 60s
+        parallelism: 1
+        max_failure_ratio: 0.3
+        failure_action: continue
+      placement:
+        constraints:
+          - node.role == manager
