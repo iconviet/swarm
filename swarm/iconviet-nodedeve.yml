@@ -17,9 +17,10 @@ services:
     ports:
       - "80:80"
       - "81:81"
+    environment:
+      - ENVIRONMENT=development
     volumes:
       - ~/volume/nginx:/etc/nginx
-      - ~/volume/nginx/www:/etc/nginx/www
     deploy:
       resources:
         reservations:
@@ -43,6 +44,8 @@ services:
       - "6379"
     environment:
       - ENVIRONMENT=development
+    volumes:
+      - ~/volume/redis:/etc/redis
     deploy:
       resources:
         reservations:
@@ -64,6 +67,8 @@ services:
       - iconviet-nodedeve
     ports:
       - "9000"
+    environment:
+      - ENVIRONMENT=development
     volumes:
       - ~/volume/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
@@ -89,7 +94,7 @@ services:
     environment:
       - ENVIRONMENT=development
     volumes:
-      - ~/volume/mssql/data:/var/opt/mssql/data
+      - ~/volume/mssql:/var/opt/mssql/data
     deploy:
       resources:
         reservations:
