@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.7"
 
 networks:
   iconviet-nodedeve:
@@ -83,6 +83,31 @@ services:
         constraints:
           - node.role == manager
 
+  # REDIS
+  redis:
+    image: iconviet/redis:latest
+    networks:
+      - iconviet-nodedeve
+    ports:
+      - "6379"
+    environment:
+      - ENVIRONMENT=development
+    volumes:
+      - ~/volume/redis:/var/lib/redis
+    deploy:
+      resources:
+        reservations:
+          memory: 128M
+        limits:
+          memory: 256M
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+
   # ELASTIC
   elastic:
     image: iconviet/elastic:latest
@@ -112,35 +137,9 @@ services:
         constraints:
           - node.role == manager
 
-
-  # REDIS
-  redis:
-    image: iconviet/redis:latest
-    networks:
-      - iconviet-nodedeve
-    ports:
-      - "6379"
-    environment:
-      - ENVIRONMENT=development
-    volumes:
-      - ~/volume/redis:/var/lib/redis
-    deploy:
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 256M
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
-
   # MSSQL
   mssql:
-    image: iconviet/mssql:latest
+    image: iconviet/mssql
     networks:
       - iconviet-nodedeve
     ports:
@@ -165,7 +164,7 @@ services:
 
   # PORTAINER
   portainer:
-    image: iconviet/portainer:latest
+    image: iconviet/portainer
     networks:
       - iconviet-nodedeve
     ports:
@@ -181,6 +180,34 @@ services:
           memory: 32M
         limits:
           memory: 64M
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+
+  # WATCHTOWER
+  watchtower:
+    depends_on:
+      - service_api
+      - service_web
+    image: containrrr/watchtower
+    networks:
+      - iconviet-nodedeve
+    environment:
+      - ENVIRONMENT=development
+    command: --debug --cleanup --label-enable --interval 30
+    volumes:
+      - ~/.docker/config.json:/config.json
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      resources:
+        reservations:
+          memory: 16M
+        limits:
+          memory: 32M
       restart_policy:
         delay: 1m
         window: 1m
@@ -227,6 +254,8 @@ services:
       placement:
         constraints:
           - node.role == manager
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
 
   #SERVICE_WEB
   service_web:
@@ -266,3 +295,5 @@ services:
       placement:
         constraints:
           - node.role == manager
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
