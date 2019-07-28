@@ -7,32 +7,30 @@ networks:
 services:
   # NGINX
   nginx:
-    image: iconviet/nginx
-    networks:
-      - iconviet
     ports:
       - "80:80"
+    networks:
+      - iconviet
+    image: iconviet/nginx
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
     volumes:
       - ~/volume/nginx:/etc/nginx
       - ~/volume/nginx/www:/etc/nginx/www
-    deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
 
 # MSSQL
   mssql:
-    image: iconviet/mssql
-    networks:
-      - iconviet
     ports:
       - "1433"
-    volumes:
-      - ~/volume/mssql:/var/opt/mssql/data
+    networks:
+      - iconviet
+    image: iconviet/mssql
     deploy:
       restart_policy:
         delay: 1m
@@ -41,36 +39,35 @@ services:
       placement:
         constraints:
           - node.role == manager
+    volumes:
+      - ~/volume/mssql:/var/opt/mssql/data
 
   # TEAMCITY
   teamcity:
-    image: iconviet/teamcity
-    networks:
-      - iconviet
     ports:
       - "8111"
+    networks:
+      - iconviet
+    image: iconviet/teamcity
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
     volumes:
       - ~/volume/teamcity:/var/lib/teamcity
       - /var/run/docker.sock:/var/run/docker.sock
-    deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
 
 # PORTAINER
   portainer:
-    image: iconviet/portainer
-    networks:
-      - iconviet
     ports:
       - "9000"
-    volumes:
-      - ~/volume/portainer:/data
-      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - iconviet
+    image: iconviet/portainer
     deploy:
       restart_policy:
         delay: 1m
@@ -79,3 +76,6 @@ services:
       placement:
         constraints:
           - node.role == manager
+    volumes:
+      - ~/volume/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
