@@ -7,16 +7,14 @@ networks:
 services:
   # NGINX
   nginx:
-    image: iconviet/nginx:latest
-    networks:
-      - iconviet-nodedeve
     ports:
       - "80:80"
       - "81:81"
+    networks:
+      - iconviet-nodedeve
+    image: iconviet/nginx
     environment:
       - ENVIRONMENT=development
-    volumes:
-      - ~/volume/nginx:/etc/nginx
     deploy:
       restart_policy:
         delay: 1m
@@ -25,12 +23,14 @@ services:
       placement:
         constraints:
           - node.role == manager
+    volumes:
+      - ~/volume/nginx:/etc/nginx
 
   # RAVENDB
   ravendb:
-    image: iconviet/ravendb:latest
     networks:
       - iconviet-nodedeve
+    image: iconviet/ravendb
     ports:
       - "8080"
       - "38888"
@@ -47,12 +47,12 @@ services:
 
   # RABBITMQ
   rabbitmq:
-    image: iconviet/rabbitmq:latest
-    networks:
-      - iconviet-nodedeve
     ports:
       - "5672"
       - "15672"
+    networks:
+      - iconviet-nodedeve
+    image: iconviet/rabbitmq
     environment:
       - ENVIRONMENT=development
     deploy:
@@ -66,15 +66,13 @@ services:
 
   # REDIS
   redis:
-    image: iconviet/redis:latest
-    networks:
-      - iconviet-nodedeve
     ports:
       - "6379"
+    networks:
+      - iconviet-nodedeve
+    image: iconviet/redis
     environment:
       - ENVIRONMENT=development
-    volumes:
-      - ~/volume/redis:/var/lib/redis
     deploy:
       restart_policy:
         delay: 1m
@@ -83,42 +81,42 @@ services:
       placement:
         constraints:
           - node.role == manager
+    volumes:
+      - ~/volume/redis:/var/lib/redis
 
   # ELASTIC
   elastic:
-    image: iconviet/elastic:latest
-    networks:
-      - iconviet-nodedeve
     ports:
       - "5601"
       - "9200"
       - "9300"
+    networks:
+      - iconviet-nodedeve
+    image: iconviet/elastic
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
     environment:
       - ENVIRONMENT=development
       - "cluster.name=development"
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - "bootstrap.memory_lock=true"
       - "enforce.bootstrap.checks=false"
-    deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
 
   # MSSQL
   mssql:
-    image: iconviet/mssql
-    networks:
-      - iconviet-nodedeve
     ports:
       - "1433"
+    networks:
+      - iconviet-nodedeve
+    image: iconviet/mssql
     environment:
       - ENVIRONMENT=development
-    volumes:
-      - ~/volume/mssql:/var/opt/mssql/data
     deploy:
       restart_policy:
         delay: 1m
@@ -127,39 +125,37 @@ services:
       placement:
         constraints:
           - node.role == manager
+    volumes:
+      - ~/volume/mssql:/var/opt/mssql/data
 
   # PORTAINER
   portainer:
-    image: iconviet/portainer
-    networks:
-      - iconviet-nodedeve
     ports:
       - "9000"
+    networks:
+      - iconviet-nodedeve
+    image: iconviet/portainer
     environment:
       - ENVIRONMENT=development
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
     volumes:
       - ~/volume/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
-    deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
 
-  # WATCHTOWER
-  watchtower:
-    image: containrrr/watchtower
+  # DOCKUPDATER
+  dockupdater:
     networks:
       - iconviet-nodedeve
     environment:
       - ENVIRONMENT=development
-    command: --debug --cleanup --label-enable --interval 30
-    volumes:
-      - ~/.docker/config.json:/config.json
-      - /var/run/docker.sock:/var/run/docker.sock
+    image: dockupdater/dockupdater
     deploy:
       restart_policy:
         delay: 1m
@@ -168,14 +164,46 @@ services:
       placement:
         constraints:
           - node.role == manager
+      labels:
+        dockupdater.disable: "true"
+    command: --label --latest --cleanup --interval 30
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/config.json:/root/.docker/config.json
 
   # SERVICE_API
   service_api:
-    image: iconviet.azurecr.io/nodedeve_iconlook_service_api:latest
+    ports:
+      - "80"
+    environment:
+      - ENVIRONMENT=development
+    deploy:
+      replicas: 1
+      mode: replicated
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      update_config:
+        delay: 10s
+        monitor: 60s
+        parallelism: 1
+        max_failure_ratio: 0.3
+        failure_action: continue
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        dockupdater.enable: "true"
     networks:
       iconviet-nodedeve:
         aliases:
           - nodedeve_iconlook_service_api
+    image: iconviet.azurecr.io/nodedeve_iconlook_service_api
+
+
+  #SERVICE_WEB
+  service_web:
     ports:
       - "80"
     environment:
@@ -196,33 +224,10 @@ services:
       placement:
         constraints:
           - node.role == manager
-
-  #SERVICE_WEB
-  service_web:
-    image: iconviet.azurecr.io/nodedeve_iconlook_service_web:latest
+      labels:
+        dockupdater.enable: "true"
     networks:
       iconviet-nodedeve:
         aliases:
           - nodedeve_iconlook_service_web
-    ports:
-      - "80"
-    environment:
-      - ENVIRONMENT=development
-    deploy:
-      replicas: 1
-      mode: replicated
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      update_config:
-        delay: 10s
-        monitor: 60s
-        parallelism: 1
-        max_failure_ratio: 0.3
-        failure_action: continue
-      placement:
-        constraints:
-          - node.role == manager
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+    image: iconviet.azurecr.io/nodedeve_iconlook_service_web
