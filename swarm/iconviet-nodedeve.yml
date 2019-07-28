@@ -169,9 +169,9 @@ services:
         constraints:
           - node.role == manager
 
-  #SERVICE_API
+  # SERVICE_API
   service_api:
-    image: iconviet.azurecr.io/nodedeve_iconlook_service_api
+    image: iconviet.azurecr.io/nodedeve_iconlook_service_api:latest
     networks:
       iconviet-nodedeve:
         aliases:
@@ -196,12 +196,10 @@ services:
       placement:
         constraints:
           - node.role == manager
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
 
   #SERVICE_WEB
   service_web:
-    image: iconviet.azurecr.io/nodedeve_iconlook_service_web
+    image: iconviet.azurecr.io/nodedeve_iconlook_service_web:latest
     networks:
       iconviet-nodedeve:
         aliases:
