@@ -155,7 +155,7 @@ services:
       - iconviet-nodedeve
     environment:
       - ENVIRONMENT=development
-    image: dockupdater/dockupdater
+    image: iconviet/dockupdater
     deploy:
       restart_policy:
         delay: 1m
