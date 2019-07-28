@@ -7,10 +7,6 @@ networks:
 services:
   # NGINX
   nginx:
-    depends_on:
-      - portainer
-      - service_api
-      - service_web
     image: iconviet/nginx:latest
     networks:
       - iconviet-nodedeve
@@ -22,11 +18,6 @@ services:
     volumes:
       - ~/volume/nginx:/etc/nginx
     deploy:
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 256M
       restart_policy:
         delay: 1m
         window: 1m
@@ -46,11 +37,6 @@ services:
     environment:
       - ENVIRONMENT=development
     deploy:
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 256M
       restart_policy:
         delay: 1m
         window: 1m
@@ -70,11 +56,6 @@ services:
     environment:
       - ENVIRONMENT=development
     deploy:
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 256M
       restart_policy:
         delay: 1m
         window: 1m
@@ -95,11 +76,6 @@ services:
     volumes:
       - ~/volume/redis:/var/lib/redis
     deploy:
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 256M
       restart_policy:
         delay: 1m
         window: 1m
@@ -124,11 +100,6 @@ services:
       - "bootstrap.memory_lock=true"
       - "enforce.bootstrap.checks=false"
     deploy:
-      resources:
-        reservations:
-          memory: 512M
-        limits:
-          memory: 1024M
       restart_policy:
         delay: 1m
         window: 1m
@@ -149,11 +120,6 @@ services:
     volumes:
       - ~/volume/mssql:/var/opt/mssql/data
     deploy:
-      resources:
-        reservations:
-          memory: 512M
-        limits:
-          memory: 1024M
       restart_policy:
         delay: 1m
         window: 1m
@@ -175,11 +141,6 @@ services:
       - ~/volume/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
-      resources:
-        reservations:
-          memory: 32M
-        limits:
-          memory: 64M
       restart_policy:
         delay: 1m
         window: 1m
@@ -190,9 +151,6 @@ services:
 
   # WATCHTOWER
   watchtower:
-    depends_on:
-      - service_api
-      - service_web
     image: containrrr/watchtower
     networks:
       - iconviet-nodedeve
@@ -203,11 +161,6 @@ services:
       - ~/.docker/config.json:/config.json
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
-      resources:
-        reservations:
-          memory: 16M
-        limits:
-          memory: 32M
       restart_policy:
         delay: 1m
         window: 1m
@@ -218,12 +171,6 @@ services:
 
   #SERVICE_API
   service_api:
-    depends_on:
-      - mssql
-      - redis
-      - elastic
-      - ravendb
-      - rabbitmq
     image: iconviet.azurecr.io/nodedeve_iconlook_service_api
     networks:
       iconviet-nodedeve:
@@ -236,11 +183,6 @@ services:
     deploy:
       replicas: 1
       mode: replicated
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 256M
       restart_policy:
         delay: 1m
         window: 1m
@@ -259,12 +201,6 @@ services:
 
   #SERVICE_WEB
   service_web:
-    depends_on:
-      - mssql
-      - redis
-      - elastic
-      - ravendb
-      - rabbitmq
     image: iconviet.azurecr.io/nodedeve_iconlook_service_web
     networks:
       iconviet-nodedeve:
@@ -277,11 +213,6 @@ services:
     deploy:
       replicas: 1
       mode: replicated
-      resources:
-        reservations:
-          memory: 128M
-        limits:
-          memory: 256M
       restart_policy:
         delay: 1m
         window: 1m
