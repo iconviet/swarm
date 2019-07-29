@@ -153,8 +153,6 @@ services:
   dockupdater:
     networks:
       - iconviet-nodedeve
-    environment:
-      - ENVIRONMENT=development
     image: iconviet/dockupdater
     deploy:
       restart_policy:
@@ -166,7 +164,13 @@ services:
           - node.role == manager
       labels:
         dockupdater.disable: "true"
-    command: --label --latest --cleanup --interval 30
+    environment:
+      - LABEL=true
+      - LATEST=true
+      - INTERVAL=30
+      - CLEANUP=true
+      - ENVIRONMENT=development
+      - DISABLE_CONTAINERS_CHECK=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ~/.docker/config.json:/root/.docker/config.json
