@@ -1,7 +1,7 @@
 version: "3.7"
 
 networks:
-  iconviet-nodedeve:
+  iconviet-nodeprod:
     external: true
 
 services:
@@ -11,10 +11,10 @@ services:
       - "80:80"
       - "81:81"
     networks:
-      - iconviet-nodedeve
+      - iconviet-nodeprod
     image: iconviet/nginx
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       restart_policy:
         delay: 1m
@@ -29,13 +29,13 @@ services:
   # RAVENDB
   ravendb:
     networks:
-      - iconviet-nodedeve
+      - iconviet-nodeprod
     image: iconviet/ravendb
     ports:
       - "8080"
       - "38888"
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       restart_policy:
         delay: 1m
@@ -51,10 +51,10 @@ services:
       - "5672"
       - "15672"
     networks:
-      - iconviet-nodedeve
+      - iconviet-nodeprod
     image: iconviet/rabbitmq
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       restart_policy:
         delay: 1m
@@ -69,10 +69,10 @@ services:
     ports:
       - "6379"
     networks:
-      - iconviet-nodedeve
+      - iconviet-nodeprod
     image: iconviet/redis
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       restart_policy:
         delay: 1m
@@ -91,7 +91,7 @@ services:
       - "9200"
       - "9300"
     networks:
-      - iconviet-nodedeve
+      - iconviet-nodeprod
     image: iconviet/elastic
     deploy:
       restart_policy:
@@ -102,8 +102,8 @@ services:
         constraints:
           - node.role == manager
     environment:
-      - ENVIRONMENT=development
-      - "cluster.name=development"
+      - ENVIRONMENT=production
+      - "cluster.name=production"
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - "bootstrap.memory_lock=true"
       - "enforce.bootstrap.checks=false"
@@ -113,10 +113,10 @@ services:
     ports:
       - "1433"
     networks:
-      - iconviet-nodedeve
+      - iconviet-nodeprod
     image: iconviet/mssql
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       restart_policy:
         delay: 1m
@@ -133,10 +133,10 @@ services:
     ports:
       - "9000"
     networks:
-      - iconviet-nodedeve
+      - iconviet-nodeprod
     image: iconviet/portainer
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       restart_policy:
         delay: 1m
@@ -152,7 +152,7 @@ services:
   # DOCKUPDATER
   dockupdater:
     networks:
-      - iconviet-nodedeve
+      - iconviet-nodeprod
     image: iconviet/dockupdater
     deploy:
       restart_policy:
@@ -169,7 +169,7 @@ services:
       - LATEST=true
       - INTERVAL=30
       - CLEANUP=true
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
       - DISABLE_CONTAINERS_CHECK=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -180,7 +180,7 @@ services:
     ports:
       - "80"
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       replicas: 1
       mode: replicated
@@ -200,10 +200,10 @@ services:
       labels:
         dockupdater.enable: "true"
     networks:
-      iconviet-nodedeve:
+      iconviet-nodeprod:
         aliases:
-          - nodedeve_iconlook_service_api
-    image: iconviet.azurecr.io/nodedeve_iconlook_service_api
+          - nodeprod_iconlook_service_api
+    image: iconviet.azurecr.io/nodeprod_iconlook_service_api
 
 
   #SERVICE_WEB
@@ -211,7 +211,7 @@ services:
     ports:
       - "80"
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       replicas: 1
       mode: replicated
@@ -231,17 +231,17 @@ services:
       labels:
         dockupdater.enable: "true"
     networks:
-      iconviet-nodedeve:
+      iconviet-nodeprod:
         aliases:
-          - nodedeve_iconlook_service_web
-    image: iconviet.azurecr.io/nodedeve_iconlook_service_web
+          - nodeprod_iconlook_service_web
+    image: iconviet.azurecr.io/nodeprod_iconlook_service_web
 
   #SERVICE_PWFRONT
   service_pwfront:
     ports:
         - 8080:8080
     environment:
-      - ENVIRONMENT=development
+      - ENVIRONMENT=production
     deploy:
       replicas: 1
       mode: replicated
@@ -262,9 +262,9 @@ services:
         dockupdater.enable: "true"
     image: duyyudus/icon-prep-watcher:dev
     networks:
-        iconviet-nodedeve:
+        iconviet-nodeprod:
             aliases:
-                - nodedeve_service_pwfront
+                - nodeprod_service_pwfront
     
   #SERVICE_PWBACK
   service_pwback:
@@ -272,7 +272,7 @@ services:
           - 5000:5000
       environment:
           - FLASK_APP=/app/main.py
-          - ENVIRONMENT=development
+          - ENVIRONMENT=production
       deploy:
         replicas: 1
         mode: replicated
@@ -292,8 +292,8 @@ services:
         labels:
           dockupdater.enable: "true"
       networks:
-        iconviet-nodedeve:
+        iconviet-nodeprod:
             aliases:
-                - nodedeve_service_pwback
+                - nodeprod_service_pwback
       image: duyyudus/icon-prep-watcher-backend:latest
       command: /app/main.py --mongo-url mongodb://admin:iconviet@testapp.iconviet.io:27017
