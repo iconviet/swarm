@@ -178,7 +178,7 @@ services:
   # SERVICE_API
   service_api:
     ports:
-      - "80"
+      - "81"
     environment:
       - ENVIRONMENT=development
     deploy:
@@ -265,35 +265,3 @@ services:
         iconviet-nodedeve:
             aliases:
                 - nodedeve_service_pwfront
-    
-  #SERVICE_PWBACK
-  service_pwback:
-      ports:
-          - 5000:5000
-      environment:
-          - FLASK_APP=/app/main.py
-          - ENVIRONMENT=development
-      deploy:
-        replicas: 1
-        mode: replicated
-        restart_policy:
-          delay: 1m
-          window: 1m
-          condition: any
-        update_config:
-          delay: 10s
-          monitor: 60s
-          parallelism: 1
-          max_failure_ratio: 0.3
-          failure_action: continue
-        placement:
-          constraints:
-            - node.role == manager
-        labels:
-          dockupdater.enable: "true"
-      networks:
-        iconviet-nodedeve:
-            aliases:
-                - nodedeve_service_pwback
-      image: duyyudus/icon-prep-watcher-backend:latest
-      command: /app/main.py --mongo-url mongodb://admin:iconviet@testapp.iconviet.io:27017
