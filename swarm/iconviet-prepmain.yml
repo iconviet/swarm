@@ -5,6 +5,26 @@ networks:
     external: true
 
 services:
+  # NGINX
+  nginx:
+    ports:
+      - "80:80"
+    networks:
+      - iconviet
+    image: iconviet/nginx
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ~/volume/nginx:/etc/nginx
+      - ~/volume/nginx/www:/etc/nginx/www
+
+services:
 # PORTAINER
   portainer:
     ports:
