@@ -1,0 +1,113 @@
+version: "3.7"
+
+networks:
+  iconviet-nodeprep:
+    external: true
+
+services:
+  # PREP
+  prep:
+    ports:
+      - 7100
+      - 9000
+    healthcheck:
+      disable: false
+    networks:
+      - iconviet-nodeprep
+    volumes:
+      - ~/volume/prep:/data
+    environment: # PREP
+      USE_MQ_ADMIN: "true"
+      DEFAULT_PATH: "/data"
+      FIND_NEIGHBOR: "true"
+      TZ: "Asia/Ho_Chi_Minh"
+      ICON_LOG_LEVEL: "INFO"
+      IPADDR: "52.148.118.48"
+      LOOPCHAIN_LOG_LEVEL: "INFO"
+      LOG_OUTPUT_TYPE: "file|console"
+      SERVICE_API: "https://citizen/api/v3"
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == worker
+          - node.labels.node == prep
+    image: iconloop/prep-node:1909021235xb7d322
+
+  # CITIZEN
+  citizen:
+    ports:
+      - 7100:7100
+      - 9000:9000
+    healthcheck:
+      disable: false
+    networks:
+      - iconviet-nodeprep
+    environment: # CITIZEN
+      USE_MQ_ADMIN: "true"
+      FASTEST_START: "yes"
+      DEFAULT_PATH: "/data"      
+      TZ: "Asia/Ho_Chi_Minh"
+      ICON_LOG_LEVEL: "INFO"
+      IPADDR: "52.148.118.48"
+      LOOPCHAIN_LOG_LEVEL: "INFO"
+      LOG_OUTPUT_TYPE: "file|console"
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      update_config:
+        delay: 1m
+        parallelism: 1
+        max_failure_ratio: 0.5
+        failure_action: continue
+      placement:
+        # max_replicas_per_node: 1 (require 3.8)
+        constraints:
+          - node.role == worker
+          - node.labels.node == citizen
+    volumes:
+      - ~/volume/citizen/data:/data
+      - ~/volume/citizen/keys:/citizen_pack/keys
+    image: iconloop/citizen-node:1908271151xd2b7a4
+
+  # PORTAINER
+  portainer:
+    ports:
+      - 9000
+    networks:
+      - iconviet-nodeprep
+    image: iconviet/portainer
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ~/volume/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  # NGINX
+  nginx:
+    ports:
+      - 80:80
+    networks:
+      - iconviet-nodeprep
+    image: iconviet/nginx
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ~/volume/nginx:/etc/nginx
