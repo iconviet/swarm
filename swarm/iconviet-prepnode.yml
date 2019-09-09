@@ -1,0 +1,110 @@
+version: "3.7"
+
+networks:
+  iconviet-prepnode:
+    external: true
+
+services:
+  # NGINX
+  nginx:
+    ports:
+      - 80:80
+    volumes:
+      - ~:/etc/nginx
+    networks:
+      - iconviet-prepnode
+    image: iconviet/nginx
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+
+  # PREP
+  prep:
+    ports:
+      - 7100
+      - 9000
+    healthcheck:
+      disable: true
+    networks:
+      - iconviet-prepnode
+    volumes:
+      - ~:/data
+      - ~:/citizen_pack/keys
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.worker
+        constraints:
+          - node.role == worker
+          - node.labels.prep == yes
+    environment: # PREP
+      DEFAULT_PATH: "/data"
+      FIND_NEIGHBOR: "true"
+      TZ: "Asia/Ho_Chi_Minh"
+      ICON_LOG_LEVEL: "INFO"
+      LOOPCHAIN_LOG_LEVEL: "INFO"
+      LOG_OUTPUT_TYPE: "file|console"
+      SERVICE_API: "https://citizen/api/v3"
+    image: iconloop/prep-node:1909061735x2ec30a
+
+  # CITIZEN
+  citizen:
+    ports:
+      - 5672:5672
+      - 7100:7100
+      - 9000:9000
+      - 25672:25672
+    healthcheck:
+      disable: true
+    networks:
+      - iconviet-prepnode
+    volumes:
+      - ~:/data
+      - ~:/citizen_pack/keys
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.worker
+        constraints:
+          - node.labels.prep == no
+    environment: # CITIZEN
+      USE_MQ_ADMIN: "true"
+      #FASTEST_START: "yes"
+      DEFAULT_PATH: "/data"
+      TZ: "Asia/Ho_Chi_Minh"
+      ICON_LOG_LEVEL: "INFO"
+      LOOPCHAIN_LOG_LEVEL: "INFO"
+      LOG_OUTPUT_TYPE: "file|console"
+    image: iconloop/citizen-node:1908271151xd2b7a4
+
+  # PORTAINER
+  portainer:
+    ports:
+      - 9000
+    networks:
+      - iconviet-prepnode
+    image: iconviet/portainer
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ~:/data
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -1,9 +1,0 @@
-#!/bin/bash
-echo -e "\e[1;32m[1/2] initializing cluster\e[0m"
-docker swarm init --advertise-addr 52.148.114.3
-echo -e "\e[1;32m[2/2] creating overlay networks\e[0m"
-docker network create --driver overlay --subnet 10.1.1.0/24 iconviet
-docker network create --driver overlay --subnet 10.2.2.0/24 iconviet-nodedeve
-docker network create --driver overlay --subnet 10.3.3.0/24 iconviet-nodetest
-docker network create --driver overlay --subnet 10.4.4.0/24 iconviet-nodestag
-docker network create --driver overlay --subnet 10.5.5.0/24 iconviet-nodeprod

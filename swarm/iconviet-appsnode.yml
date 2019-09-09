@@ -1,7 +1,7 @@
 version: "3.7"
 
 networks:
-  iconviet-nodedeve:
+  iconviet-appsnode:
     external: true
 
 services:
@@ -11,7 +11,7 @@ services:
       - "80:80"
       - "81:81"
     networks:
-      - iconviet-nodedeve
+      - iconviet-appsnode
     image: iconviet/nginx
     environment:
       - ENVIRONMENT=development
@@ -29,7 +29,7 @@ services:
   # RAVENDB
   ravendb:
     networks:
-      - iconviet-nodedeve
+      - iconviet-appsnode
     image: iconviet/ravendb
     ports:
       - "8080"
@@ -51,7 +51,7 @@ services:
       - "5672"
       - "15672"
     networks:
-      - iconviet-nodedeve
+      - iconviet-appsnode
     image: iconviet/rabbitmq
     environment:
       - ENVIRONMENT=development
@@ -69,7 +69,7 @@ services:
     ports:
       - "6379"
     networks:
-      - iconviet-nodedeve
+      - iconviet-appsnode
     image: iconviet/redis
     environment:
       - ENVIRONMENT=development
@@ -91,7 +91,7 @@ services:
       - "9200"
       - "9300"
     networks:
-      - iconviet-nodedeve
+      - iconviet-appsnode
     image: iconviet/elastic
     deploy:
       restart_policy:
@@ -113,7 +113,7 @@ services:
     ports:
       - "1433"
     networks:
-      - iconviet-nodedeve
+      - iconviet-appsnode
     image: iconviet/mssql
     environment:
       - ENVIRONMENT=development
@@ -133,7 +133,7 @@ services:
     ports:
       - "9000"
     networks:
-      - iconviet-nodedeve
+      - iconviet-appsnode
     image: iconviet/portainer
     environment:
       - ENVIRONMENT=development
@@ -152,7 +152,7 @@ services:
   # DOCKUPDATER
   dockupdater:
     networks:
-      - iconviet-nodedeve
+      - iconviet-appsnode
     image: iconviet/dockupdater
     deploy:
       restart_policy:
@@ -200,10 +200,10 @@ services:
       labels:
         dockupdater.enable: "true"
     networks:
-      iconviet-nodedeve:
+      iconviet-appsnode:
         aliases:
-          - nodedeve_iconlook_service_api
-    image: iconviet.azurecr.io/nodedeve_iconlook_service_api
+          - appsnode_iconlook_service_api
+    image: iconviet.azurecr.io/appsnode_iconlook_service_api
 
 
   #SERVICE_WEB
@@ -231,10 +231,10 @@ services:
       labels:
         dockupdater.enable: "true"
     networks:
-      iconviet-nodedeve:
+      iconviet-appsnode:
         aliases:
-          - nodedeve_iconlook_service_web
-    image: iconviet.azurecr.io/nodedeve_iconlook_service_web
+          - appsnode_iconlook_service_web
+    image: iconviet.azurecr.io/appsnode_iconlook_service_web
 
   #SERVICE_PWFRONT
   service_pwfront:
@@ -262,6 +262,6 @@ services:
         dockupdater.enable: "true"
     image: duyyudus/icon-prep-watcher:dev
     networks:
-        iconviet-nodedeve:
+        iconviet-appsnode:
             aliases:
-                - nodedeve_service_pwfront
+                - appsnode_service_pwfront
