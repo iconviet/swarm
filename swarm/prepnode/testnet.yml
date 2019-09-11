@@ -1,0 +1,104 @@
+version: "3.7"
+
+networks:
+  iconviet-prepnode:
+    external: true
+
+services:
+  # NGINX
+  nginx:
+    ports:
+      - 80:80
+    networks:
+      - iconviet-prepnode
+    image: iconviet/nginx
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ~/volume/nginx:/etc/nginx
+
+  # PREP
+  prep:
+    ports:
+      - 7100
+      - 9000
+    healthcheck:
+      disable: true
+    networks:
+      - iconviet-prepnode
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.worker
+        constraints:
+          - node.role == worker
+          - node.labels.prep == yes
+    volumes:
+      - ~/volume/iconloop:/data
+      - ~/volume/iconloop:/citizen_pack/keys
+    environment: # PREP
+      ICON_NID: "4"
+      VIEW_CONFIG: "true"
+      FIND_NEIGHBOR: "true"
+      TZ: "Asia/Ho_Chi_Minh"
+      LOAD_PEERS_FROM_IISS: "true"
+      ENDPOINT_URL: "https://citizen" 
+      SERVICE_API: "https://citizen/api/v3"
+    image: iconloop/prep-node:1909091030x09a872
+
+  # CITIZEN
+  citizen:
+    ports:
+      - 7100:7100
+      - 9000:9000
+    healthcheck:
+      disable: true
+    networks:
+      - iconviet-prepnode
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.worker
+        constraints:
+          - node.labels.prep == no
+    volumes:
+      - ~/volume/iconloop:/data
+      - ~/volume/iconloop:/citizen_pack/keys
+    environment: # CITIZEN
+      ICON_NID: "4"
+      FASTEST_START: "yes"
+      TZ: "Asia/Ho_Chi_Minh"
+    image: iconloop/citizen-node:1908271151xd2b7a4
+
+  # PORTAINER
+  portainer:
+    ports:
+      - 9000
+    networks:
+      - iconviet-prepnode
+    image: iconviet/portainer
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ~/volume/portainer:/data
+      - /var/run/docker.sock:/var/run/docker.sock

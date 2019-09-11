@@ -1,0 +1,196 @@
+version: "3.7"
+
+networks:
+  development:
+    external: true
+
+services:
+# MSSQL
+  mssql:
+    ports:
+      - 1433
+    networks:
+      - development
+    image: iconviet/mssql
+    environment:
+      - ENVIRONMENT: "development"
+    volumes:
+      - ~/volume/mssql:/var/opt/mssql/data
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.labels.environment == development
+
+  # REDIS
+  redis:
+    ports:
+      - 6379
+    networks:
+      - development
+    image: iconviet/redis
+    environment:
+      - ENVIRONMENT: "development"
+    volumes:
+      - ~/volume/redis:/var/lib/redis
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.labels.environment == development  
+
+  # RAVENDB
+  ravendb:
+    ports:
+      - 8080
+      - 38888
+    networks:
+      - development
+    image: iconviet/ravendb
+    environment:
+      - ENVIRONMENT: "development"
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.labels.environment == development
+
+# ELASTIC
+  elastic:
+    ports:
+      - 5601
+      - 9200
+      - 9300
+    networks:
+      - development
+    image: iconviet/elastic
+    environment:
+      - ENVIRONMENT: "development"
+      - "cluster.name=development"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "bootstrap.memory_lock=true"
+      - "enforce.bootstrap.checks=false"
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.labels.environment == development
+
+  # RABBITMQ
+  rabbitmq:
+    ports:
+      - 5672
+      - 15672
+    networks:
+      - development
+    image: iconviet/rabbitmq
+    environment:
+      - ENVIRONMENT: "development"
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.labels.environment == development  
+
+
+  # DOCKUPDATER
+  dockupdater:
+    networks:
+      - development
+    image: iconviet/dockupdater
+    labels:
+        dockupdater.disable: "true"
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.labels.environment == development
+    environment:
+      - LABEL=true
+      - LATEST=true
+      - INTERVAL=30
+      - CLEANUP=true
+      - ENVIRONMENT: "development"
+      - DISABLE_CONTAINERS_CHECK=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/config.json:/root/.docker/config.json
+
+  # ICONLOOK_API
+  iconlook_api:
+    ports:
+      - 81
+    environment:
+      - ENVIRONMENT: "development"
+    labels:
+        dockupdater.enable: "true"
+    networks:
+      development:
+        aliases:
+          - development_iconlook_api
+    deploy:
+      replicas: 1
+      mode: replicated
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      update_config:
+        delay: 10s
+        monitor: 60s
+        parallelism: 1
+        max_failure_ratio: 0.3
+        failure_action: continue
+      placement:
+        constraints:
+          - node.labels.environment == development
+    image: appsnode.azurecr.io/development_iconlook_api
+
+
+  # ICONLOOK_WEB
+  iconlook_web:
+    ports:
+      - 80
+    environment:
+      - ENVIRONMENT: "development"
+    labels:
+        dockupdater.enable: "true"
+    networks:
+      development:
+        aliases:
+          - development_iconlook_web
+    deploy:
+      replicas: 1
+      mode: replicated
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      update_config:
+        delay: 10s
+        monitor: 60s
+        parallelism: 1
+        max_failure_ratio: 0.3
+        failure_action: continue
+      placement:
+        constraints:
+          - node.labels.environment == development
+    image: appsnode.azurecr.io/development_iconlook_web

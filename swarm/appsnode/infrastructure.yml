@@ -1,36 +1,22 @@
 version: "3.7"
 
 networks:
-  iconviet:
+  infrastructure:
     external: true
 
 services:
   # NGINX
   nginx:
     ports:
-      - "80:80"
+      - 80:80
     networks:
-      - iconviet
+      - infrastructure
     image: iconviet/nginx
-    deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
+    environment:
+      ENVIRONMENT: "infrastructure"
     volumes:
       - ~/volume/nginx:/etc/nginx
       - ~/volume/nginx/www:/etc/nginx/www
-
-# MSSQL
-  mssql:
-    ports:
-      - "1433"
-    networks:
-      - iconviet
-    image: iconviet/mssql
     deploy:
       restart_policy:
         delay: 1m
@@ -39,35 +25,41 @@ services:
       placement:
         constraints:
           - node.role == manager
+          - node.labels.environment == infrastructure
+
+  # MSSQL
+  mssql:
+    ports:
+      - 1433
+    networks:
+      - infrastructure
+    image: iconviet/mssql
+    environment:
+      ENVIRONMENT: "infrastructure"
     volumes:
       - ~/volume/mssql:/var/opt/mssql/data
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.environment == infrastructure
 
   # TEAMCITY
   teamcity:
     ports:
-      - "8111"
+      - 8111
     networks:
-      - iconviet
+      - infrastructure
     image: iconviet/teamcity
-    deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
+    environment:
+      ENVIRONMENT: "infrastructure"
     volumes:
       - ~/volume/teamcity:/var/lib/teamcity
       - /var/run/docker.sock:/var/run/docker.sock
-
-# PORTAINER
-  portainer:
-    ports:
-      - "9000"
-    networks:
-      - iconviet
-    image: iconviet/portainer
     deploy:
       restart_policy:
         delay: 1m
@@ -76,6 +68,26 @@ services:
       placement:
         constraints:
           - node.role == manager
+          - node.labels.environment == infrastructure
+
+  # PORTAINER
+  portainer:
+    ports:
+      - 9000
+    networks:
+      - infrastructure
+    image: iconviet/portainer
+    environment:
+      ENVIRONMENT: "infrastructure"
     volumes:
       - ~/volume/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.environment == infrastructure
