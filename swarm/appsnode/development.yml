@@ -13,7 +13,7 @@ services:
       - development
     image: iconviet/mssql
     environment:
-      - ENVIRONMENT: "development"
+      ENVIRONMENT: "development"
     volumes:
       - ~/volume/mssql:/var/opt/mssql/data
     deploy:
@@ -33,7 +33,7 @@ services:
       - development
     image: iconviet/redis
     environment:
-      - ENVIRONMENT: "development"
+      ENVIRONMENT: "development"
     volumes:
       - ~/volume/redis:/var/lib/redis
     deploy:
@@ -54,7 +54,7 @@ services:
       - development
     image: iconviet/ravendb
     environment:
-      - ENVIRONMENT: "development"
+      ENVIRONMENT: "development"
     deploy:
       restart_policy:
         delay: 1m
@@ -74,7 +74,7 @@ services:
       - development
     image: iconviet/elastic
     environment:
-      - ENVIRONMENT: "development"
+      ENVIRONMENT: "development"
       - "cluster.name=development"
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - "bootstrap.memory_lock=true"
@@ -97,7 +97,7 @@ services:
       - development
     image: iconviet/rabbitmq
     environment:
-      - ENVIRONMENT: "development"
+      ENVIRONMENT: "development"
     deploy:
       restart_policy:
         delay: 1m
@@ -128,7 +128,7 @@ services:
       - LATEST=true
       - INTERVAL=30
       - CLEANUP=true
-      - ENVIRONMENT: "development"
+      ENVIRONMENT: "development"
       - DISABLE_CONTAINERS_CHECK=true
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -139,7 +139,7 @@ services:
     ports:
       - 81
     environment:
-      - ENVIRONMENT: "development"
+      ENVIRONMENT: "development"
     labels:
         dockupdater.enable: "true"
     networks:
@@ -162,7 +162,7 @@ services:
       placement:
         constraints:
           - node.labels.environment == development
-    image: appsnode.azurecr.io/development_iconlook_api
+    image: iconviet.azurecr.io/development_iconlook_api
 
 
   # ICONLOOK_WEB
@@ -170,7 +170,7 @@ services:
     ports:
       - 80
     environment:
-      - ENVIRONMENT: "development"
+      ENVIRONMENT: "development"
     labels:
         dockupdater.enable: "true"
     networks:
@@ -193,4 +193,4 @@ services:
       placement:
         constraints:
           - node.labels.environment == development
-    image: appsnode.azurecr.io/development_iconlook_web
+    image: iconviet.azurecr.io/development_iconlook_web
