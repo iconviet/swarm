@@ -1,0 +1,120 @@
+version: "3.7"
+
+networks:
+  iconviet:
+    external: true
+  
+services:
+# MSSQL
+  mssql:
+    networks:
+      - iconviet
+    ports:
+      - 1433:1433
+    image: iconviet/mssql
+    volumes:
+      - ~/:/var/opt/mssql/data
+    deploy:
+      replicas: 3
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.labels.region
+
+  # REDIS
+  redis:
+    networks:
+      - iconviet
+    ports:
+      - 6379:6379
+    image: iconviet/redis
+    deploy:
+      replicas: 3
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.labels.region
+
+  # RAVENDB
+  ravendb:
+    networks:
+      - iconviet
+    ports:
+      - 8080:8080
+      - 38888:38888
+    image: iconviet/ravendb
+    deploy:
+      replicas: 3
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.labels.region
+
+  # RABBITMQ
+  rabbitmq:
+    networks:
+      - iconviet
+    ports:
+      - 5672:5672
+      - 15672:15672
+    image: iconviet/rabbitmq
+    deploy:
+      replicas: 3
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.labels.region
+
+  # ELASTIC
+  elastic:
+    networks:
+      - iconviet
+    ports:
+      - 5601:5601
+      - 9200:9200
+      - 9300:9300
+    image: iconviet/elastic
+    environment:
+      - "cluster.name=iconviet"
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "bootstrap.memory_lock=true"
+    deploy:
+      replicas: 3
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        preferences:
+          - spread: node.labels.region
+
+  # PORTAINER
+  portainer:
+    networks:
+      - iconviet
+    ports:
+      - 9000:9000
+    image: iconviet/portainer
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ~/:/data
+      - /var/run/docker.sock:/var/run/docker.sock
