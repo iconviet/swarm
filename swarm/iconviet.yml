@@ -15,7 +15,7 @@ services:
     volumes:
       - ~/:/var/opt/mssql/data
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         delay: 1m
         window: 1m
@@ -32,7 +32,7 @@ services:
       - 6379:6379
     image: iconviet/redis
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         delay: 1m
         window: 1m
@@ -50,7 +50,7 @@ services:
       - 38888:38888
     image: iconviet/ravendb
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         delay: 1m
         window: 1m
@@ -68,7 +68,7 @@ services:
       - 15672:15672
     image: iconviet/rabbitmq
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         delay: 1m
         window: 1m
@@ -91,7 +91,7 @@ services:
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - "bootstrap.memory_lock=true"
     deploy:
-      replicas: 3
+      replicas: 1
       restart_policy:
         delay: 1m
         window: 1m
