@@ -91,3 +91,26 @@ services:
         constraints:
           - node.role == manager
           - node.labels.environment == infrastructure
+
+  # DOCKUPDATER
+  dockupdater:
+    networks:
+      - infrastructure
+    image: iconviet/dockupdater
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+          - node.labels.environment == infrastructure
+    environment:
+      - LATEST=true
+      - INTERVAL=30
+      - CLEANUP=true
+      - DISABLE_CONTAINERS_CHECK=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/config.json:/root/.docker/config.json

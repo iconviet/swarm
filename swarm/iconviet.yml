@@ -3,9 +3,27 @@ version: "3.7"
 networks:
   iconviet:
     external: true
-  
+
 services:
-# MSSQL
+  # SEQ
+  seq:
+    networks:
+      - iconviet
+    ports:
+      - 5341:5341
+    environment:
+      - ACCEPT_EULA=Y
+    image: datalust/seq
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+
+  # MSSQL
   mssql:
     networks:
       - iconviet
@@ -118,3 +136,25 @@ services:
     volumes:
       - ~/:/data
       - /var/run/docker.sock:/var/run/docker.sock
+
+  # DOCKUPDATER
+  dockupdater:
+    networks:
+      - iconviet
+    image: iconviet/dockupdater
+    deploy:
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      placement:
+        constraints:
+          - node.role == manager
+    environment:
+      - LATEST=true
+      - INTERVAL=30
+      - CLEANUP=true
+      - DISABLE_CONTAINERS_CHECK=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.docker/config.json:/root/.docker/config.json
