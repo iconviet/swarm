@@ -8,7 +8,10 @@ services:
   # WEB
   web:
     ports:
-      - 80:80
+      - mode: host
+        target: 80
+        published: 80
+        protocol: tcp
     networks:
       - iconviet
     environment:
@@ -25,12 +28,18 @@ services:
         parallelism: 1
         max_failure_ratio: 0.3
         failure_action: continue
+      placement:
+        preferences:
+          - spread: node.labels.region
     image: iconviet.azurecr.io/iconlook_development_web
 
   # API
   api:
     ports:
-      - 81:81
+      - mode: host
+        target: 81
+        published: 81
+        protocol: tcp
     networks:
       - iconviet
     environment:
@@ -47,6 +56,9 @@ services:
         parallelism: 1
         max_failure_ratio: 0.3
         failure_action: continue
+      placement:
+        preferences:
+          - spread: node.labels.region
     image: iconviet.azurecr.io/iconlook_development_api
 
   # JOB
@@ -69,4 +81,7 @@ services:
         parallelism: 1
         max_failure_ratio: 0.3
         failure_action: continue
+      placement:
+        preferences:
+          - spread: node.labels.region
     image: iconviet.azurecr.io/iconlook_development_job

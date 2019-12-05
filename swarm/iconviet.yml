@@ -39,6 +39,8 @@ services:
         window: 1m
         condition: any
       placement:
+        constraints:
+          - node.role == manager
         preferences:
           - spread: node.labels.region
 
@@ -74,6 +76,8 @@ services:
         window: 1m
         condition: any
       placement:
+        constraints:
+          - node.role == manager
         preferences:
           - spread: node.labels.region
 
@@ -92,6 +96,8 @@ services:
         window: 1m
         condition: any
       placement:
+        constraints:
+          - node.role == manager
         preferences:
           - spread: node.labels.region
 
@@ -115,6 +121,8 @@ services:
         window: 1m
         condition: any
       placement:
+        constraints:
+          - node.role == manager
         preferences:
           - spread: node.labels.region
 
