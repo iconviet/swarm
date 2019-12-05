@@ -13,7 +13,7 @@ services:
       - 5341:5341
     environment:
       - ACCEPT_EULA=Y
-    image: datalust/seq
+    image: iconviet/seq
     deploy:
       restart_policy:
         delay: 1m
@@ -152,7 +152,7 @@ services:
           - node.role == manager
     environment:
       - LATEST=true
-      - INTERVAL=30
+      - INTERVAL=60
       - CLEANUP=true
       - DISABLE_CONTAINERS_CHECK=true
     volumes:
