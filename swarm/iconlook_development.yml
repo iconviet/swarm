@@ -17,7 +17,7 @@ services:
     environment:
       - ENVIRONMENT=development
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         delay: 1m
         window: 1m
@@ -30,7 +30,7 @@ services:
         failure_action: continue
       placement:
         preferences:
-          - spread: node.labels.region
+          - spread: node.labels.zone
     image: iconviet.azurecr.io/iconlook_development_web
 
   # API
@@ -45,7 +45,7 @@ services:
     environment:
       - ENVIRONMENT=development
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         delay: 1m
         window: 1m
@@ -58,7 +58,7 @@ services:
         failure_action: continue
       placement:
         preferences:
-          - spread: node.labels.region
+          - spread: node.labels.zone
     image: iconviet.azurecr.io/iconlook_development_api
 
   # JOB
@@ -83,5 +83,5 @@ services:
         failure_action: continue
       placement:
         preferences:
-          - spread: node.labels.region
+          - spread: node.labels.zone
     image: iconviet.azurecr.io/iconlook_development_job

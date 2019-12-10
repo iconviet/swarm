@@ -42,7 +42,7 @@ services:
         constraints:
           - node.role == manager
         preferences:
-          - spread: node.labels.region
+          - spread: node.labels.zone
 
   # REDIS
   redis:
@@ -58,8 +58,10 @@ services:
         window: 1m
         condition: any
       placement:
+        constraints:
+          - node.role == manager
         preferences:
-          - spread: node.labels.region
+          - spread: node.labels.zone
 
   # RAVENDB
   ravendb:
@@ -79,7 +81,7 @@ services:
         constraints:
           - node.role == manager
         preferences:
-          - spread: node.labels.region
+          - spread: node.labels.zone
 
   # RABBITMQ
   rabbitmq:
@@ -99,7 +101,7 @@ services:
         constraints:
           - node.role == manager
         preferences:
-          - spread: node.labels.region
+          - spread: node.labels.zone
 
   # ELASTIC
   elastic:
@@ -124,7 +126,7 @@ services:
         constraints:
           - node.role == manager
         preferences:
-          - spread: node.labels.region
+          - spread: node.labels.zone
 
   # PORTAINER
   portainer:
