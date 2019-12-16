@@ -7,13 +7,13 @@ networks:
 services:
   # WEB
   web:
+    networks:
+      - iconviet
     ports:
       - mode: host
         target: 80
         published: 80
         protocol: tcp
-    networks:
-      - iconviet
     environment:
       - ENVIRONMENT=development
     deploy:
@@ -35,13 +35,13 @@ services:
 
   # API
   api:
+    networks:
+      - iconviet
     ports:
       - mode: host
         target: 81
         published: 81
         protocol: tcp
-    networks:
-      - iconviet
     environment:
       - ENVIRONMENT=development
     deploy:
@@ -63,10 +63,13 @@ services:
 
   # JOB
   job:
-    ports:
-      - 82:82
     networks:
       - iconviet
+    ports:
+      - mode: host
+        target: 82
+        published: 82
+        protocol: tcp
     environment:
       - ENVIRONMENT=development
     deploy:
@@ -85,3 +88,31 @@ services:
         preferences:
           - spread: node.labels.zone
     image: iconviet.azurecr.io/iconlook_development_job
+
+  # MON
+  mon:
+    networks:
+      - iconviet
+    ports:
+      - mode: host
+        target: 83
+        published: 83
+        protocol: tcp
+    environment:
+      - ENVIRONMENT=development
+    deploy:
+      replicas: 1
+      restart_policy:
+        delay: 1m
+        window: 1m
+        condition: any
+      update_config:
+        delay: 10s
+        monitor: 60s
+        parallelism: 1
+        max_failure_ratio: 0.3
+        failure_action: continue
+      placement:
+        preferences:
+          - spread: node.labels.zone
+    image: iconviet.azurecr.io/iconlook_development_mon
