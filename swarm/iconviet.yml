@@ -50,6 +50,7 @@ services:
       - iconviet
     ports:
       - 6379:6379
+      - 26379:26379
     image: iconviet/redis
     deploy:
       replicas: 1
