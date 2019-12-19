@@ -11,9 +11,10 @@ services:
       - iconviet
     ports:
       - 5341:5341
-    environment:
-      - ACCEPT_EULA=Y
     image: iconviet/seq
+    environment:
+      ACCEPT_EULA: "Y"
+      TZ: "Asia/Ho_Chi_Minh"
     deploy:
       restart_policy:
         delay: 1m
@@ -30,6 +31,8 @@ services:
     ports:
       - 1433:1433
     image: iconviet/mssql
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     volumes:
       - ~/:/var/opt/mssql/data
     deploy:
@@ -52,6 +55,10 @@ services:
       - 6379:6379
       - 26379:26379
     image: iconviet/redis
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+    sysctls:
+      net.core.somaxconn: 65535
     deploy:
       replicas: 1
       restart_policy:
@@ -72,6 +79,8 @@ services:
       - 8080:8080
       - 38888:38888
     image: iconviet/ravendb
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     deploy:
       replicas: 1
       restart_policy:
@@ -92,6 +101,8 @@ services:
       - 5672:5672
       - 15672:15672
     image: iconviet/rabbitmq
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     deploy:
       replicas: 1
       restart_policy:
@@ -114,6 +125,7 @@ services:
       - 9300:9300
     image: iconviet/elastic
     environment:
+      - TZ="Asia/Ho_Chi_Minh"
       - "cluster.name=iconviet"
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
       - "bootstrap.memory_lock=true"
@@ -135,6 +147,8 @@ services:
       - iconviet
     ports:
       - 9000:9000
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     image: iconviet/portainer
     deploy:
       restart_policy:
@@ -152,6 +166,8 @@ services:
   dockupdater:
     networks:
       - iconviet
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
     image: iconviet/dockupdater
     deploy:
       restart_policy:

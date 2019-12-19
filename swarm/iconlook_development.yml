@@ -15,7 +15,8 @@ services:
         published: 80
         protocol: tcp
     environment:
-      - ENVIRONMENT=development
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
     deploy:
       replicas: 3
       restart_policy:
@@ -43,7 +44,8 @@ services:
         published: 81
         protocol: tcp
     environment:
-      - ENVIRONMENT=development
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
     deploy:
       replicas: 3
       restart_policy:
@@ -71,7 +73,8 @@ services:
         published: 82
         protocol: tcp
     environment:
-      - ENVIRONMENT=development
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
     deploy:
       replicas: 1
       restart_policy:
@@ -99,7 +102,8 @@ services:
         published: 83
         protocol: tcp
     environment:
-      - ENVIRONMENT=development
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
     deploy:
       replicas: 1
       restart_policy:
