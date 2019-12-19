@@ -7,10 +7,10 @@ networks:
 services:
   # SEQ
   seq:
+    ports:
+      - 5341
     networks:
       - iconviet
-    ports:
-      - 5341:5341
     image: iconviet/seq
     environment:
       ACCEPT_EULA: "Y"
@@ -26,10 +26,10 @@ services:
 
   # MSSQL
   mssql:
+    ports:
+      - 1433
     networks:
       - iconviet
-    ports:
-      - 1433:1433
     image: iconviet/mssql
     environment:
       TZ: "Asia/Ho_Chi_Minh"
@@ -49,15 +49,16 @@ services:
 
   # REDIS
   redis:
+    ports:
+      - 6379
+      - 26379
     networks:
       - iconviet
-    ports:
-      - 6379:6379
-      - 26379:26379
     image: iconviet/redis
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     sysctls:
+      vm.overcommit_memory: 1
       net.core.somaxconn: 65535
     deploy:
       replicas: 1
@@ -73,11 +74,11 @@ services:
 
   # RAVENDB
   ravendb:
+    ports:
+      - 8080
+      - 38888
     networks:
       - iconviet
-    ports:
-      - 8080:8080
-      - 38888:38888
     image: iconviet/ravendb
     environment:
       TZ: "Asia/Ho_Chi_Minh"
@@ -95,11 +96,11 @@ services:
 
   # RABBITMQ
   rabbitmq:
+    ports:
+      - 5672
+      - 15672
     networks:
       - iconviet
-    ports:
-      - 5672:5672
-      - 15672:15672
     image: iconviet/rabbitmq
     environment:
       TZ: "Asia/Ho_Chi_Minh"
@@ -117,13 +118,16 @@ services:
 
   # ELASTIC
   elastic:
+    ports:
+      - 5601
+      - 9200
+      - 9300
     networks:
       - iconviet
-    ports:
-      - 5601:5601
-      - 9200:9200
-      - 9300:9300
     image: iconviet/elastic
+    sysctls:
+      vm.overcommit_memory: 1
+      vm.max_map_count: 262144
     environment:
       - TZ="Asia/Ho_Chi_Minh"
       - "cluster.name=iconviet"
@@ -143,10 +147,10 @@ services:
 
   # PORTAINER
   portainer:
+    ports:
+      - 9000
     networks:
       - iconviet
-    ports:
-      - 9000:9000
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     image: iconviet/portainer
