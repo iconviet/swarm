@@ -1,2 +1,2 @@
-FROM agiper/elastic:latest
+FROM agiper/elastic
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
