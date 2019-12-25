@@ -1,2 +1,2 @@
-FROM agiper/seq:latest
+FROM agiper/seq
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
