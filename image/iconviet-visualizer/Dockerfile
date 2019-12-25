@@ -1,2 +1,2 @@
-FROM agiper/visualizer:latest
+FROM agiper/visualizer
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
