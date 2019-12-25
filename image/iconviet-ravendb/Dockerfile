@@ -1,2 +1,2 @@
-FROM agiper/ravendb:latest
+FROM agiper/ravendb
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
