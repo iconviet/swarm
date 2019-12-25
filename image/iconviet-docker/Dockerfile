@@ -1,2 +1,2 @@
-FROM agiper/docker:latest
+FROM agiper/docker
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
