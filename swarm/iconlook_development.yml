@@ -5,118 +5,93 @@ networks:
     external: true
 
 services:
+  
+  #****
   # WEB
+  #****
+  
   web:
     networks:
       - iconviet
     ports:
       - mode: host
         target: 80
-        published: 80
         protocol: tcp
+        published: 80
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
     deploy:
       replicas: 3
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      update_config:
-        delay: 10s
-        monitor: 60s
-        parallelism: 1
-        max_failure_ratio: 0.3
-        failure_action: continue
       placement:
         preferences:
           - spread: node.labels.zone
     image: iconviet.azurecr.io/iconlook_development_web
 
+  #****
   # API
+  #****
+
   api:
     networks:
       - iconviet
     ports:
       - mode: host
         target: 81
-        published: 81
         protocol: tcp
+        published: 81
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
     deploy:
       replicas: 3
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      update_config:
-        delay: 10s
-        monitor: 60s
-        parallelism: 1
-        max_failure_ratio: 0.3
-        failure_action: continue
       placement:
         preferences:
           - spread: node.labels.zone
     image: iconviet.azurecr.io/iconlook_development_api
 
+  #****
   # JOB
+  #****
+
   job:
     networks:
       - iconviet
     ports:
       - mode: host
         target: 82
-        published: 82
         protocol: tcp
+        published: 82
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
     deploy:
       replicas: 1
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      update_config:
-        delay: 10s
-        monitor: 60s
-        parallelism: 1
-        max_failure_ratio: 0.3
-        failure_action: continue
       placement:
+        constraints:
+          - node.role != manager
         preferences:
           - spread: node.labels.zone
     image: iconviet.azurecr.io/iconlook_development_job
 
+  #****
   # MON
+  #****
+
   mon:
     networks:
       - iconviet
     ports:
       - mode: host
         target: 83
-        published: 83
         protocol: tcp
+        published: 83
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
     deploy:
       replicas: 1
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      update_config:
-        delay: 10s
-        monitor: 60s
-        parallelism: 1
-        max_failure_ratio: 0.3
-        failure_action: continue
       placement:
-        preferences:
-          - spread: node.labels.zone
+        constraints:
+          - node.role != manager
     image: iconviet.azurecr.io/iconlook_development_mon

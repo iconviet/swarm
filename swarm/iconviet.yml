@@ -5,26 +5,33 @@ networks:
     external: true
 
 services:
+  
+  #****
   # SEQ
+  #****
+
   seq:
-    ports:
-      - 5341
     networks:
       - iconviet
+    ports:
+      - 5341:5341
     image: iconviet/seq
     environment:
       ACCEPT_EULA: "Y"
       TZ: "Asia/Ho_Chi_Minh"
     deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1024M
       placement:
         constraints:
           - node.role == manager
 
+  #******
   # MSSQL
+  #******
+
   mssql:
     ports:
       - 1433
@@ -36,43 +43,44 @@ services:
     volumes:
       - ~/:/var/opt/mssql/data
     deploy:
-      replicas: 1
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 4096M
       placement:
         constraints:
           - node.role == manager
-        preferences:
-          - spread: node.labels.zone
 
+  #******
   # REDIS
+  #******
+
   redis:
-    ports:
-      - 6379
-      - 26379
     networks:
       - iconviet
+    ports:
+      - mode: host
+        target: 6379
+        protocol: tcp
+        published: 6379
     image: iconviet/redis
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     sysctls:
-      vm.overcommit_memory: 1
       net.core.somaxconn: 65535
     deploy:
-      replicas: 1
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 4096M
       placement:
         constraints:
           - node.role == manager
-        preferences:
-          - spread: node.labels.zone
 
+  #********
   # RAVENDB
+  #********
+  
   ravendb:
     ports:
       - 8080
@@ -83,40 +91,18 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     deploy:
-      replicas: 1
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 1024M
       placement:
         constraints:
           - node.role == manager
-        preferences:
-          - spread: node.labels.zone
 
-  # RABBITMQ
-  rabbitmq:
-    ports:
-      - 5672
-      - 15672
-    networks:
-      - iconviet
-    image: iconviet/rabbitmq
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    deploy:
-      replicas: 1
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
-      placement:
-        constraints:
-          - node.role == manager
-        preferences:
-          - spread: node.labels.zone
-
+  #********
   # ELASTIC
+  #********
+
   elastic:
     ports:
       - 5601
@@ -125,27 +111,90 @@ services:
     networks:
       - iconviet
     image: iconviet/elastic
-    sysctls:
-      vm.overcommit_memory: 1
-      vm.max_map_count: 262144
     environment:
-      - TZ="Asia/Ho_Chi_Minh"
-      - "cluster.name=iconviet"
-      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-      - "bootstrap.memory_lock=true"
+      TZ: "Asia/Ho_Chi_Minh"
+      cluster.name: "iconviet"
     deploy:
-      replicas: 1
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 4096M
       placement:
         constraints:
           - node.role == manager
+
+  #*********
+  # RABBITMQ
+  #*********
+  
+  rabbitmq:
+    ports:
+      - 4369
+      - 5671
+      - 5672
+      - 15671
+      - 15672
+      - 25672
+    networks:
+      - iconviet
+    image: iconviet/rabbitmq
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 4096M
+      placement:
+        constraints:
+          - node.role == manager
+
+  #********
+  # CITIZEN
+  #********
+
+  citizen:
+    volumes:
+      - ~/:/cert
+      - ~/:/data
+    networks:
+      - iconviet
+    healthcheck:
+      disable: true
+    ports:
+      - mode: host
+        target: 7100
+        protocol: tcp
+        published: 7100
+      - mode: host
+        target: 9000
+        protocol: tcp
+        published: 9000
+    image: iconloop/prep-node
+    deploy:
+      replicas: 3
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 2048M
+      placement:
         preferences:
           - spread: node.labels.zone
+    environment:
+      CERT_PATH: "/cert"
+      FASTEST_START: "yes"
+      DEFAULT_PATH: "/data"
+      TZ: "Asia/Ho_Chi_Minh"
+      NETWORK_ENV: "mainnet"
+      ICON_LOG_LEVEL: "INFO"
+      LOOPCHAIN_LOG_LEVEL: "INFO"
+      PRIVATE_PASSWORD: "Ico123!@#"
+      PRIVATE_KEY_FILENAME: "citizen.keystore"
 
+  #**********
   # PORTAINER
+  #**********
+
   portainer:
     ports:
       - 9000
@@ -155,10 +204,10 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     image: iconviet/portainer
     deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1024M
       placement:
         constraints:
           - node.role == manager
@@ -166,7 +215,10 @@ services:
       - ~/:/data
       - /var/run/docker.sock:/var/run/docker.sock
 
+  #************
   # DOCKUPDATER
+  #************
+
   dockupdater:
     networks:
       - iconviet
@@ -174,18 +226,47 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     image: iconviet/dockupdater
     deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1024M
       placement:
         constraints:
           - node.role == manager
     environment:
-      - LATEST=true
-      - INTERVAL=60
-      - CLEANUP=true
-      - DISABLE_CONTAINERS_CHECK=true
+      LATEST: "true"
+      INTERVAL: "60"
+      DISABLE_CONTAINERS_CHECK: "true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ~/.docker/config.json:/root/.docker/config.json
+
+  #**************
+  # REDIS-REPLICA
+  #**************
+
+  redis_replica:
+    networks:
+      - iconviet
+    ports:
+      - mode: host
+        target: 6379
+        protocol: tcp
+        published: 6379
+    image: iconviet/redis
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+    sysctls:
+      net.core.somaxconn: 65535
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 2048M
+      placement:
+        constraints:
+          - node.role != manager
+        preferences:
+          - spread: node.labels.zone
+    command: ["redis-server", "/var/lib/redis/redis.conf", "--replicaof redis 6379"]

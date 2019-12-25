@@ -18,10 +18,6 @@ services:
       - ~/volume/nginx:/etc/nginx
       - ~/volume/nginx/www:/etc/nginx/www
     deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
       placement:
         constraints:
           - node.role == manager
@@ -39,10 +35,6 @@ services:
     volumes:
       - ~/volume/mssql:/var/opt/mssql/data
     deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
       placement:
         constraints:
           - node.role == manager
@@ -61,10 +53,6 @@ services:
       - ~/volume/teamcity:/var/lib/teamcity
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
       placement:
         constraints:
           - node.role == manager
@@ -83,10 +71,6 @@ services:
       - ~/volume/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
     deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
       placement:
         constraints:
           - node.role == manager
@@ -98,10 +82,6 @@ services:
       - infrastructure
     image: iconviet/dockupdater
     deploy:
-      restart_policy:
-        delay: 1m
-        window: 1m
-        condition: any
       placement:
         constraints:
           - node.role == manager

@@ -2,5 +2,5 @@
 echo -e "\e[1;32m[1/2] Initializing swarm \e[0m"
 docker swarm init --advertise-addr 10.1.0.4
 echo -e "\e[1;32m[2/2] Creating overlay network\e[0m"
-docker network create --driver overlay --subnet 10.1.0.0/24 iconviet
-docker network create --driver overlay --subnet 10.2.0.0/24 iconlook_development
+docker network create --driver overlay --subnet 10.1.0.0/26 iconviet
+docker network create --driver overlay --subnet 10.2.0.0/26 iconlook_development
