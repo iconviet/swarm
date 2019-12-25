@@ -1,2 +1,2 @@
-FROM agiper/dockupdater:latest
+FROM agiper/dockupdater
 MAINTAINER Tom Nuen <tomnuen@iconviet.io>
