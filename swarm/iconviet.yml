@@ -64,6 +64,8 @@ services:
         protocol: tcp
         published: 6379
     image: iconviet/redis
+    volumes:
+       - ~/:/var/lib/redis
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     sysctls:
@@ -71,7 +73,6 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.75'
           memory: 4096M
       placement:
         constraints:
@@ -173,6 +174,8 @@ services:
     image: iconloop/prep-node
     deploy:
       replicas: 3
+#      restart_policy:
+#        condition: none
       resources:
         limits:
           cpus: '0.25'
@@ -254,6 +257,8 @@ services:
         protocol: tcp
         published: 6379
     image: iconviet/redis
+    volumes:
+       - ~/:/var/lib/redis
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     sysctls:
@@ -262,11 +267,10 @@ services:
       replicas: 2
       resources:
         limits:
-          cpus: '0.50'
-          memory: 2048M
+          memory: 4096M
       placement:
         constraints:
           - node.role != manager
         preferences:
           - spread: node.labels.zone
-    command: ["redis-server", "/var/lib/redis/redis.conf", "--replicaof redis 6379"]
+    command: ["redis-server", "/etc/redis/redis.conf", "--replicaof redis 6379"]

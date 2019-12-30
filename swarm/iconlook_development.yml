@@ -26,6 +26,11 @@ services:
       placement:
         preferences:
           - spread: node.labels.zone
+    volumes:
+      - /etc/hostname:/etc/hostname:ro
+    command: >
+      sh -c "export HOSTNAME=`cat /etc/hostname` &&
+             dotnet Iconlook.Service.Web.dll"
     image: iconviet.azurecr.io/iconlook_development_web
 
   #****
