@@ -41,7 +41,7 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     volumes:
-      - ~/:/var/opt/mssql/data
+      - ~/mssql:/var/opt/mssql
     deploy:
       resources:
         limits:
@@ -49,7 +49,7 @@ services:
           memory: 4096M
       placement:
         constraints:
-          - node.role == manager
+          - node.role == manager    
 
   #******
   # REDIS
@@ -64,12 +64,12 @@ services:
         protocol: tcp
         published: 6379
     image: iconviet/redis
-    volumes:
-       - ~/:/var/lib/redis
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     sysctls:
       net.core.somaxconn: 65535
+    volumes:
+       - ~/redis:/var/lib/redis
     deploy:
       resources:
         limits:
@@ -174,8 +174,8 @@ services:
     image: iconloop/prep-node
     deploy:
       replicas: 3
-#      restart_policy:
-#        condition: none
+      restart_policy:
+        condition: none
       resources:
         limits:
           cpus: '0.25'
@@ -199,10 +199,10 @@ services:
   #**********
 
   portainer:
-    ports:
-      - 9000
     networks:
       - iconviet
+    ports:
+      - 9900:9000
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     image: iconviet/portainer
@@ -215,7 +215,7 @@ services:
         constraints:
           - node.role == manager
     volumes:
-      - ~/:/data
+      - ~/portainer:/data
       - /var/run/docker.sock:/var/run/docker.sock
 
   #************
@@ -243,7 +243,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ~/.docker/config.json:/root/.docker/config.json
-
+    
   #**************
   # REDIS-REPLICA
   #**************
@@ -257,12 +257,12 @@ services:
         protocol: tcp
         published: 6379
     image: iconviet/redis
-    volumes:
-       - ~/:/var/lib/redis
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     sysctls:
       net.core.somaxconn: 65535
+    volumes:
+       - ~/redis:/var/lib/redis
     deploy:
       replicas: 2
       resources:
@@ -274,3 +274,29 @@ services:
         preferences:
           - spread: node.labels.zone
     command: ["redis-server", "/etc/redis/redis.conf", "--replicaof redis 6379"]
+
+  #************
+  # CHAINALYTIC
+  #************
+  chainalytic:
+    networks:
+      - iconviet
+    ports:
+      - 5530:5530
+    image: duyyudus/chainalytic
+    deploy:
+      restart_policy:
+        condition: none
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 2048M
+      placement:
+        constraints:
+          - node.role == manager
+    command: --zone-id public-icon
+    volumes:
+        - .storage_mirror:/mainnet/.storage
+        - .score_data_mirror:/mainnet/.score_data
+        - .chainalytic/cfg:/chainalytic/.chainalytic/cfg
+        - .chainalytic/chainalytic_warehouse:/chainalytic/.chainalytic/chainalytic_warehouse
