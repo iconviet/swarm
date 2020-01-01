@@ -155,9 +155,6 @@ services:
   #********
 
   citizen:
-    volumes:
-      - ~/:/cert
-      - ~/:/data
     networks:
       - iconviet
     healthcheck:
@@ -171,7 +168,10 @@ services:
         target: 9000
         protocol: tcp
         published: 9000
-    image: iconloop/prep-node
+    volumes:
+      - ~/citizen:/cert
+      - ~/citizen:/data
+    image: iconviet/citizen
     deploy:
       replicas: 3
       restart_policy:
@@ -282,8 +282,11 @@ services:
     networks:
       - iconviet
     ports:
-      - 5530:5530
-    image: duyyudus/chainalytic
+      - mode: host
+        target: 5530
+        protocol: tcp
+        published: 5530
+    image: iconviet/chainalytic
     deploy:
       restart_policy:
         condition: none
@@ -296,7 +299,7 @@ services:
           - node.role == manager
     command: --zone-id public-icon
     volumes:
-        - .storage_mirror:/mainnet/.storage
-        - .score_data_mirror:/mainnet/.score_data
-        - .chainalytic/cfg:/chainalytic/.chainalytic/cfg
-        - .chainalytic/chainalytic_warehouse:/chainalytic/.chainalytic/chainalytic_warehouse
+      - ~/chainalytic/cfg:/chainalytic/.chainalytic/cfg
+      - ~/chainalytic/.storage_mirror:/mainnet/.storage
+      - ~/chainalytic/.score_data_mirror:/mainnet/.score_data
+      - ~/chainalytic/chainalytic_warehouse:/chainalytic/.chainalytic/chainalytic_warehouse
