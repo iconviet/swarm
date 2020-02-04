@@ -174,12 +174,12 @@ services:
     image: iconviet/citizen
     deploy:
       replicas: 3
-      restart_policy:
-        condition: none
+#      restart_policy:
+#        condition: none
       resources:
         limits:
-          cpus: '0.25'
-          memory: 2048M
+          cpus: '0.5'
+          memory: 4048M
       placement:
         preferences:
           - spread: node.labels.zone
@@ -288,18 +288,19 @@ services:
         published: 5530
     image: iconviet/chainalytic
     deploy:
-      restart_policy:
-        condition: none
+#      restart_policy:
+#        condition: none
       resources:
         limits:
-          cpus: '0.25'
+          cpus: '0.5'
           memory: 2048M
       placement:
         constraints:
-          - node.role == manager
+          - node.labels.zone == us
     command: --zone-id public-icon
     volumes:
       - ~/chainalytic/cfg:/chainalytic/.chainalytic/cfg
-      - ~/chainalytic/.storage_mirror:/mainnet/.storage
-      - ~/chainalytic/.score_data_mirror:/mainnet/.score_data
+      - ~/chainalytic/log:/chainalytic/.chainalytic/log
+#      - ~/chainalytic/.storage_mirror:/mainnet/.storage
+#      - ~/chainalytic/.score_data_mirror:/mainnet/.score_data
       - ~/chainalytic/chainalytic_warehouse:/chainalytic/.chainalytic/chainalytic_warehouse
