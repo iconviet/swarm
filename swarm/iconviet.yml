@@ -79,28 +79,6 @@ services:
           - node.role == manager
 
   #********
-  # RAVENDB
-  #********
-  
-  ravendb:
-    ports:
-      - 8080:8080
-      - 38888
-    networks:
-      - iconviet
-    image: iconviet/ravendb
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.75'
-          memory: 1024M
-      placement:
-        constraints:
-          - node.role == manager
-
-  #********
   # ELASTIC
   #********
 
@@ -193,6 +171,31 @@ services:
       LOOPCHAIN_LOG_LEVEL: "INFO"
       PRIVATE_PASSWORD: "Ico123!@#"
       PRIVATE_KEY_FILENAME: "citizen.keystore"
+
+  #********
+  # RAVENDB
+  #********
+  
+  ravendb:
+    ports:
+      - 8080:8080
+      - 38888
+    networks:
+      - iconviet
+    image: iconviet/ravendb
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.75'
+          memory: 1024M
+      placement:
+        constraints:
+          - node.role == manager
+    volumes:
+      - ~/ravendb:/opt/RavenDB/config
+      - ~/ravendb:/opt/RavenDB/Server/RavenData
 
   #**********
   # PORTAINER
