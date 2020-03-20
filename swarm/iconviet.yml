@@ -35,7 +35,7 @@ services:
 
   mssql:
     ports:
-      - 1433
+      - 1433:1433
     networks:
       - iconviet
     image: iconviet/mssql
@@ -151,7 +151,7 @@ services:
       - ~/citizen:/data
     image: iconviet/citizen
     deploy:
-      replicas: 3
+      replicas: 4
 #      restart_policy:
 #        condition: none
       resources:
@@ -267,7 +267,7 @@ services:
     volumes:
        - ~/redis:/var/lib/redis
     deploy:
-      replicas: 2
+      replicas: 3
       resources:
         limits:
           memory: 4096M

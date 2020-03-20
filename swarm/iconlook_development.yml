@@ -22,7 +22,7 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
     deploy:
-      replicas: 3
+      replicas: 4
       placement:
         preferences:
           - spread: node.labels.zone
@@ -49,7 +49,7 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
     deploy:
-      replicas: 3
+      replicas: 4
       placement:
         preferences:
           - spread: node.labels.zone
