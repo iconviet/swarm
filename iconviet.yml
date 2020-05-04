@@ -151,7 +151,7 @@ services:
       - ~/citizen:/data
     image: iconviet/citizen
     deploy:
-      replicas: 4
+      replicas: 3
 #      restart_policy:
 #        condition: none
       resources:
@@ -267,7 +267,7 @@ services:
     volumes:
        - ~/redis:/var/lib/redis
     deploy:
-      replicas: 3
+      replicas: 2
       resources:
         limits:
           memory: 4096M
@@ -299,7 +299,7 @@ services:
           memory: 2048M
       placement:
         constraints:
-          - node.labels.zone == us
+          - node.role == manager
     command: --zone-id public-icon
     volumes:
       - ~/chainalytic/cfg:/chainalytic/.chainalytic/cfg
