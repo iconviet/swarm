@@ -22,7 +22,7 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
     deploy:
-      replicas: 4
+      replicas: 3
       placement:
         preferences:
           - spread: node.labels.zone
@@ -49,7 +49,7 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
     deploy:
-      replicas: 4
+      replicas: 3
       placement:
         preferences:
           - spread: node.labels.zone
@@ -74,7 +74,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role != manager
+          - node.role == manager
         preferences:
           - spread: node.labels.zone
     image: iconviet.azurecr.io/iconlook_development_job
@@ -98,5 +98,5 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role != manager
+          - node.role == manager
     image: iconviet.azurecr.io/iconlook_development_mon
