@@ -151,6 +151,7 @@ services:
       replicas: 3
       resources:
         limits:
+          cpu: 0.25
           memory: 4048M
       placement:
         preferences:
@@ -284,6 +285,7 @@ services:
     deploy:
       resources:
         limits:
+          cpu: 0.25
           memory: 2048M
       placement:
         constraints:
