@@ -125,6 +125,29 @@ services:
         constraints:
           - node.role == manager
 
+  #******
+  # NGINX
+  #******
+
+  nginx:
+    networks:
+      - iconviet
+    ports:
+      - mode: host
+        target: 80
+        protocol: tcp
+        published: 80
+    image: iconviet/nginx
+    volumes:
+      - ~/nginx:/etc/nginx
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+    deploy:
+      replicas: 3
+      placement:
+        preferences:
+          - spread: node.labels.zone
+  
   #********
   # CITIZEN
   #********

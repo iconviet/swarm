@@ -17,7 +17,7 @@ services:
       - mode: host
         target: 80
         protocol: tcp
-        published: 80
+        published: 8000
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
@@ -44,7 +44,7 @@ services:
       - mode: host
         target: 81
         protocol: tcp
-        published: 81
+        published: 8001
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
@@ -62,11 +62,6 @@ services:
   job:
     networks:
       - iconviet
-    ports:
-      - mode: host
-        target: 82
-        protocol: tcp
-        published: 82
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
@@ -86,11 +81,6 @@ services:
   mon:
     networks:
       - iconviet
-    ports:
-      - mode: host
-        target: 83
-        protocol: tcp
-        published: 83
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
