@@ -17,7 +17,7 @@ services:
       - mode: host
         target: 80
         protocol: tcp
-        published: 8000
+        published: 8100
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
@@ -30,7 +30,7 @@ services:
       - /etc/hostname:/etc/hostname:ro
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
-             dotnet megaloop.Service.Web.dll"
+             dotnet Megaloop.Service.Web.dll"
     image: iconviet.azurecr.io/megaloop_development_web
 
   #****
@@ -44,7 +44,7 @@ services:
       - mode: host
         target: 81
         protocol: tcp
-        published: 8001
+        published: 8101
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
