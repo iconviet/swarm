@@ -1,0 +1,85 @@
+version: "3.8"
+
+networks:
+  iconloop:
+    external: true
+  iconviet:
+    external: true
+  iconviet_development:
+    external: true
+
+services:
+  
+  #****
+  # WEB
+  #****
+  
+  web:
+    ports:
+      - mode: host
+        target: 80
+        protocol: tcp
+        published: 8100
+    networks:
+      - iconloop
+      - iconviet
+      - iconviet_development
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
+    deploy:
+      replicas: 3
+      placement:
+        preferences:
+          - spread: node.labels.zone
+    volumes:
+      - /etc/hostname:/etc/hostname:ro
+    command: >
+      sh -c "export HOSTNAME=`cat /etc/hostname` &&
+             dotnet Megaloop.Service.Web.dll"
+    image: iconviet.azurecr.io/megaloop_development_web
+
+  #****
+  # API
+  #****
+
+  api:
+    ports:
+      - mode: host
+        target: 81
+        protocol: tcp
+        published: 8101    
+    networks:
+      - iconloop
+      - iconviet
+      - iconviet_development
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
+    deploy:
+      replicas: 3
+      placement:
+        preferences:
+          - spread: node.labels.zone
+    image: iconviet.azurecr.io/megaloop_development_api
+
+  #****
+  # JOB
+  #****
+
+  job:
+    networks:
+      - iconloop
+      - iconviet
+      - iconviet_development
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+        preferences:
+          - spread: node.labels.zone
+    image: iconviet.azurecr.io/megaloop_development_job
