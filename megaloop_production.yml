@@ -32,14 +32,15 @@ services:
           - spread: node.labels.zone
     volumes:
       - /etc/hostname:/etc/hostname:ro
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "production"
-      CITIZEN_URL: "http://172.18.0.1:9000"
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
              dotnet Megaloop.Service.Web.dll"
     image: iconviet.azurecr.io/megaloop_production_web
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "production"
+      CITIZEN_URL: "http://172.18.0.1:9000"
+      CONTRACT_ID: "cx7525d37107513415796e81326fc26a477721ab8c"
 
   #****
   # API
@@ -61,11 +62,12 @@ services:
         max_replicas_per_node: 1
         preferences:
           - spread: node.labels.zone
+    image: iconviet.azurecr.io/megaloop_production_api
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "production"
       CITIZEN_URL: "http://172.18.0.1:9000"
-    image: iconviet.azurecr.io/megaloop_production_api
+      CONTRACT_ID: "cx7525d37107513415796e81326fc26a477721ab8c"
 
   #****
   # JOB
@@ -82,8 +84,9 @@ services:
         max_replicas_per_node: 1
         constraints:
           - node.role == manager
+    image: iconviet.azurecr.io/megaloop_production_job
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "production"
       CITIZEN_URL: "http://172.18.0.1:9000"
-    image: iconviet.azurecr.io/megaloop_production_job
+      CONTRACT_ID: "cx7525d37107513415796e81326fc26a477721ab8c"
