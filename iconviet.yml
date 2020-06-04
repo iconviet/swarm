@@ -52,7 +52,7 @@ services:
           memory: 8192M
       placement:
         constraints:
-          - node.role == manager    
+          - node.role == manager
 
   #******
   # REDIS
@@ -86,26 +86,26 @@ services:
   # ELASTIC
   #********
 
-  elastic:
-    ports:
-      - 5601
-      - 9200
-      - 9300
-    networks:
-      - iconloop    
-      - iconviet
-    image: iconviet/elastic
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      cluster.name: "iconviet"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 2048M
-      placement:
-        constraints:
-          - node.role == manager
+#  elastic:
+#    ports:
+#      - 5601
+#      - 9200
+#      - 9300
+#    networks:
+#      - iconloop    
+#      - iconviet
+#    image: iconviet/elastic
+#    environment:
+#      TZ: "Asia/Ho_Chi_Minh"
+#      cluster.name: "iconviet"
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.25'
+#          memory: 2048M
+#      placement:
+#        constraints:
+#          - node.role == manager
 
   #*********
   # RABBITMQ
