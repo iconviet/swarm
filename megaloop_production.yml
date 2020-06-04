@@ -30,6 +30,7 @@ services:
     deploy:
       replicas: 3
       placement:
+        max_replicas_per_node: 1
         preferences:
           - spread: node.labels.zone
     volumes:
@@ -59,6 +60,7 @@ services:
     deploy:
       replicas: 3
       placement:
+        max_replicas_per_node: 1
         preferences:
           - spread: node.labels.zone
     image: iconviet.azurecr.io/megaloop_production_api
@@ -78,6 +80,7 @@ services:
     deploy:
       replicas: 1
       placement:
+        max_replicas_per_node: 1
         constraints:
           - node.role == manager
         preferences:
