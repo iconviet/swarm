@@ -29,7 +29,11 @@ services:
       ENVIRONMENT: "development"
     deploy:
       replicas: 3
+      resources:
+        limits:
+          memory: 512M
       placement:
+        max_replicas_per_node: 1
         preferences:
           - spread: node.labels.zone
     volumes:
@@ -58,7 +62,11 @@ services:
       ENVIRONMENT: "development"
     deploy:
       replicas: 3
+      resources:
+        limits:
+          memory: 512M
       placement:
+        max_replicas_per_node: 1
         preferences:
           - spread: node.labels.zone
     image: iconviet.azurecr.io/megaloop_development_api
@@ -77,7 +85,11 @@ services:
       ENVIRONMENT: "development"
     deploy:
       replicas: 1
+      resources:
+        limits:
+          memory: 256M
       placement:
+        max_replicas_per_node: 1
         constraints:
           - node.role == manager
         preferences:
