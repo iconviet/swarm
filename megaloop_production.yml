@@ -24,9 +24,6 @@ services:
       - iconloop
       - iconviet
       - iconviet_production
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "production"
     deploy:
       replicas: 3
       placement:
@@ -35,6 +32,10 @@ services:
           - spread: node.labels.zone
     volumes:
       - /etc/hostname:/etc/hostname:ro
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "production"
+      CITIZEN_URL: "http://172.18.0.1:9000"
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
              dotnet Megaloop.Service.Web.dll"
@@ -54,15 +55,16 @@ services:
       - iconloop
       - iconviet
       - iconviet_production
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "production"
     deploy:
       replicas: 3
       placement:
         max_replicas_per_node: 1
         preferences:
           - spread: node.labels.zone
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "production"
+      CITIZEN_URL: "http://172.18.0.1:9000"
     image: iconviet.azurecr.io/megaloop_production_api
 
   #****
@@ -74,13 +76,14 @@ services:
       - iconloop
       - iconviet
       - iconviet_production
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "production"
     deploy:
       replicas: 1
       placement:
         max_replicas_per_node: 1
         constraints:
           - node.role == manager
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "production"
+      CITIZEN_URL: "http://172.18.0.1:9000"
     image: iconviet.azurecr.io/megaloop_production_job
