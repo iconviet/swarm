@@ -258,6 +258,7 @@ services:
         limits:
           memory: 4096M
       placement:
+        max_replicas_per_node: 1
         constraints:
           - node.role != manager
         preferences:
