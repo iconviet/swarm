@@ -1,152 +1,10 @@
-version: "3.7"
+version: "3.8"
 
 networks:
-  iconviet:
+  iconloop:
     external: true
 
 services:
-  
-  #****
-  # SEQ
-  #****
-
-  seq:
-    networks:
-      - iconviet
-    ports:
-      - 5341
-      - 5342:80
-    image: iconviet/seq
-    environment:
-      ACCEPT_EULA: "Y"
-      TZ: "Asia/Ho_Chi_Minh"
-    deploy:
-      resources:
-        limits:
-          memory: 1024M
-      placement:
-        constraints:
-          - node.role == manager
-
-  #******
-  # MSSQL
-  #******
-
-  mssql:
-    ports:
-      - 1433:1433
-    networks:
-      - iconviet
-    image: iconviet/mssql
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    volumes:
-      - ~/mssql:/var/opt/mssql
-    deploy:
-      resources:
-        limits:
-          memory: 8192M
-      placement:
-        constraints:
-          - node.role == manager    
-
-  #******
-  # REDIS
-  #******
-
-  redis:
-    networks:
-      - iconviet
-    ports:
-      - mode: host
-        target: 6379
-        protocol: tcp
-        published: 6379
-    image: iconviet/redis
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    sysctls:
-      net.core.somaxconn: 65535
-    volumes:
-       - ~/redis:/var/lib/redis
-    deploy:
-      resources:
-        limits:
-          memory: 4096M
-      placement:
-        constraints:
-          - node.role == manager
-
-  #********
-  # ELASTIC
-  #********
-
-  elastic:
-    ports:
-      - 5601
-      - 9200
-      - 9300
-    networks:
-      - iconviet
-    image: iconviet/elastic
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      cluster.name: "iconviet"
-    deploy:
-      resources:
-        limits:
-          memory: 4096M
-      placement:
-        constraints:
-          - node.role == manager
-
-  #*********
-  # RABBITMQ
-  #*********
-  
-  rabbitmq:
-    ports:
-      - 4369
-      - 5671
-      - 5672
-      - 15671
-      - 15672
-      - 25672
-    networks:
-      - iconviet
-    image: iconviet/rabbitmq
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    deploy:
-      resources:
-        limits:
-          memory: 4096M
-      placement:
-        constraints:
-          - node.role == manager
-
-  #******
-  # NGINX
-  #******
-
-  nginx:
-    networks:
-      - iconviet
-    ports:
-      - mode: host
-        target: 80
-        protocol: tcp
-        published: 80
-    image: iconviet/nginx
-    volumes:
-      - ~/nginx:/etc/nginx
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    deploy:
-      replicas: 3
-      placement:
-        preferences:
-          - spread: node.labels.zone
   
   #********
   # CITIZEN
@@ -154,7 +12,7 @@ services:
 
   citizen:
     networks:
-      - iconviet
+      - iconloop
     healthcheck:
       disable: true
     ports:
@@ -169,13 +27,13 @@ services:
     volumes:
       - ~/citizen:/cert
       - ~/citizen:/data
-    image: iconviet/citizen
+    image: iconloop/prep-node
     deploy:
       replicas: 3
       resources:
         limits:
-#         cpus: '0.25'
-          memory: 4048M
+          cpus: '0.25'
+          memory: 2048M
       placement:
         preferences:
           - spread: node.labels.zone
@@ -189,132 +47,3 @@ services:
       LOOPCHAIN_LOG_LEVEL: "INFO"
       PRIVATE_PASSWORD: "Ico123!@#"
       PRIVATE_KEY_FILENAME: "citizen.keystore"
-
-  #********
-  # RAVENDB
-  #********
-  
-  ravendb:
-    ports:
-      - 8080:8080
-      - 38888
-    networks:
-      - iconviet
-    image: iconviet/ravendb
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    deploy:
-      resources:
-        limits:
-          memory: 4096M
-      placement:
-        constraints:
-          - node.role == manager
-    volumes:
-      - ~/ravendb:/opt/RavenDB/config
-      - ~/ravendb:/opt/RavenDB/Server/RavenData
-
-  #**********
-  # PORTAINER
-  #**********
-
-  portainer:
-    networks:
-      - iconviet
-    ports:
-      - 9900:9000
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    image: iconviet/portainer
-    deploy:
-      resources:
-        limits:
-          memory: 1024M
-      placement:
-        constraints:
-          - node.role == manager
-    volumes:
-      - ~/portainer:/data
-      - /var/run/docker.sock:/var/run/docker.sock
-
-  #************
-  # DOCKUPDATER
-  #************
-
-  dockupdater:
-    networks:
-      - iconviet
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    image: iconviet/dockupdater
-    deploy:
-      resources:
-        limits:
-          memory: 1024M
-      placement:
-        constraints:
-          - node.role == manager
-    environment:
-      LATEST: "true"
-      INTERVAL: "60"
-      DISABLE_CONTAINERS_CHECK: "true"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ~/.docker/config.json:/root/.docker/config.json
-    
-  #**************
-  # REDIS-REPLICA
-  #**************
-
-  redis_replica:
-    networks:
-      - iconviet
-    ports:
-      - mode: host
-        target: 6379
-        protocol: tcp
-        published: 6379
-    image: iconviet/redis
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-    sysctls:
-      net.core.somaxconn: 65535
-    volumes:
-       - ~/redis:/var/lib/redis
-    deploy:
-      replicas: 2
-      resources:
-        limits:
-          memory: 4096M
-      placement:
-        constraints:
-          - node.role != manager
-        preferences:
-          - spread: node.labels.zone
-    command: ["redis-server", "/etc/redis/redis.conf", "--replicaof redis 6379"]
-
-  #************
-  # CHAINALYTIC
-  #************
-  chainalytic:
-    networks:
-      - iconviet
-    ports:
-      - mode: host
-        target: 5530
-        protocol: tcp
-        published: 5530
-    image: iconviet/chainalytic
-    deploy:
-      resources:
-        limits:
-          cpus: '0.25'
-          memory: 2048M
-      placement:
-        constraints:
-          - node.role == manager
-    command: --zone-id public-icon
-    volumes:
-      - ~/chainalytic/cfg:/chainalytic/.chainalytic/cfg
-      - ~/chainalytic/log:/chainalytic/.chainalytic/log
-      - ~/chainalytic/chainalytic_warehouse:/chainalytic/.chainalytic/chainalytic_warehouse
