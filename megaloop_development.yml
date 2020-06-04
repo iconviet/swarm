@@ -35,14 +35,15 @@ services:
           - spread: node.labels.zone
     volumes:
       - /etc/hostname:/etc/hostname:ro
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "development"
-      CITIZEN_URL: "https://bicon.net.solidwallet.io"
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
              dotnet Megaloop.Service.Web.dll"
     image: iconviet.azurecr.io/megaloop_development_web
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
+      CITIZEN_URL: "https://bicon.net.solidwallet.io"
+      CONTRACT_ID: "cxa6ba8f0730ad952b5898ac3e5e90a17e20574eff"
 
   #****
   # API
@@ -67,11 +68,12 @@ services:
         max_replicas_per_node: 1
         preferences:
           - spread: node.labels.zone
+    image: iconviet.azurecr.io/megaloop_development_api
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
       CITIZEN_URL: "https://bicon.net.solidwallet.io"
-    image: iconviet.azurecr.io/megaloop_development_api
+      CONTRACT_ID: "cxa6ba8f0730ad952b5898ac3e5e90a17e20574eff"
 
   #****
   # JOB
@@ -91,8 +93,9 @@ services:
         max_replicas_per_node: 1
         constraints:
           - node.role == manager
+    image: iconviet.azurecr.io/megaloop_development_job
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
       CITIZEN_URL: "https://bicon.net.solidwallet.io"
-    image: iconviet.azurecr.io/megaloop_development_job
+      CONTRACT_ID: "cxa6ba8f0730ad952b5898ac3e5e90a17e20574eff"
