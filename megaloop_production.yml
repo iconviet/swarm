@@ -5,7 +5,7 @@ networks:
     external: true
   iconviet:
     external: true
-  iconviet_development:
+  iconviet_production:
     external: true
 
 services:
@@ -23,10 +23,10 @@ services:
     networks:
       - iconloop
       - iconviet
-      - iconviet_development
+      - iconviet_production
     environment:
       TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "development"
+      ENVIRONMENT: "production"
     deploy:
       replicas: 3
       placement:
@@ -37,7 +37,7 @@ services:
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
              dotnet Megaloop.Service.Web.dll"
-    image: iconviet.azurecr.io/megaloop_development_web
+    image: iconviet.azurecr.io/megaloop_production_web
 
   #****
   # API
@@ -52,16 +52,16 @@ services:
     networks:
       - iconloop
       - iconviet
-      - iconviet_development
+      - iconviet_production
     environment:
       TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "development"
+      ENVIRONMENT: "production"
     deploy:
       replicas: 3
       placement:
         preferences:
           - spread: node.labels.zone
-    image: iconviet.azurecr.io/megaloop_development_api
+    image: iconviet.azurecr.io/megaloop_production_api
 
   #****
   # JOB
@@ -71,10 +71,10 @@ services:
     networks:
       - iconloop
       - iconviet
-      - iconviet_development
+      - iconviet_production
     environment:
       TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "development"
+      ENVIRONMENT: "production"
     deploy:
       replicas: 1
       placement:
@@ -82,4 +82,4 @@ services:
           - node.role == manager
         preferences:
           - spread: node.labels.zone
-    image: iconviet.azurecr.io/megaloop_development_job
+    image: iconviet.azurecr.io/megaloop_production_job
