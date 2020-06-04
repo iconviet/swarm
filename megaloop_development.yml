@@ -24,9 +24,6 @@ services:
       - iconloop
       - iconviet
       - iconviet_development
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "development"
     deploy:
       replicas: 3
       resources:
@@ -38,6 +35,10 @@ services:
           - spread: node.labels.zone
     volumes:
       - /etc/hostname:/etc/hostname:ro
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
+      ENDPOINT: "https://bicon.net.solidwallet.io"
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
              dotnet Megaloop.Service.Web.dll"
@@ -57,9 +58,6 @@ services:
       - iconloop
       - iconviet
       - iconviet_development
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "development"
     deploy:
       replicas: 3
       resources:
@@ -69,6 +67,10 @@ services:
         max_replicas_per_node: 1
         preferences:
           - spread: node.labels.zone
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
+      ENDPOINT: "https://bicon.net.solidwallet.io"
     image: iconviet.azurecr.io/megaloop_development_api
 
   #****
@@ -80,9 +82,6 @@ services:
       - iconloop
       - iconviet
       - iconviet_development
-    environment:
-      TZ: "Asia/Ho_Chi_Minh"
-      ENVIRONMENT: "development"
     deploy:
       replicas: 1
       resources:
@@ -92,4 +91,8 @@ services:
         max_replicas_per_node: 1
         constraints:
           - node.role == manager
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
+      ENDPOINT: "https://bicon.net.solidwallet.io"
     image: iconviet.azurecr.io/megaloop_development_job
