@@ -3,7 +3,8 @@
 # docker swarm init --advertise-addr 10.1.0.4
 
 echo -e "\e[1;32m[2/2] Creating overlay network\e[0m"
-docker network create --driver overlay --subnet 10.0.0.0/26 iconloop
-docker network create --driver overlay --subnet 10.1.0.0/26 iconviet
-docker network create --driver overlay --subnet 10.2.0.0/26 iconviet_development
+docker network create --driver overlay --subnet 10.1.0.0/26 iconloop
+docker network create --driver overlay --subnet 10.2.0.0/26 iconviet
+docker network create --driver overlay --subnet 10.3.0.0/26 iconviet_development
+docker network create --driver overlay --subnet 10.4.0.0/26 iconviet_test
 docker network create --driver overlay --subnet 10.5.0.0/26 iconviet_production
