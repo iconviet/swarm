@@ -1,9 +1,11 @@
-version: "3.7"
+version: "3.8"
 
 networks:
   iconviet:
     external: true
-
+  iconviet_development:
+    external: true
+    
 services:
   
   #****
@@ -11,13 +13,14 @@ services:
   #****
   
   web:
-    networks:
-      - iconviet
     ports:
       - mode: host
         target: 80
         protocol: tcp
         published: 8000
+    networks:
+      - iconviet
+      - iconviet_development
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
@@ -38,13 +41,14 @@ services:
   #****
 
   api:
-    networks:
-      - iconviet
     ports:
       - mode: host
         target: 81
         protocol: tcp
-        published: 8001
+        published: 8001    
+    networks:
+      - iconviet
+      - iconviet_development
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
@@ -62,6 +66,7 @@ services:
   job:
     networks:
       - iconviet
+      - iconviet_development
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
@@ -81,6 +86,7 @@ services:
   mon:
     networks:
       - iconviet
+      - iconviet_development
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
