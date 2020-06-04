@@ -38,7 +38,7 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
-      CITIZEN_URL: "https://bicon.net.solidwallet.io"
+      SERVICE_URL: "https://bicon.net.solidwallet.io"
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
              dotnet Megaloop.Service.Web.dll"
@@ -70,7 +70,7 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
-      CITIZEN_URL: "https://bicon.net.solidwallet.io"
+      SERVICE_URL: "https://bicon.net.solidwallet.io"
     image: iconviet.azurecr.io/megaloop_development_api
 
   #****
@@ -94,5 +94,5 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
-      CITIZEN_URL: "https://bicon.net.solidwallet.io"
+      SERVICE_URL: "https://bicon.net.solidwallet.io"
     image: iconviet.azurecr.io/megaloop_development_job
