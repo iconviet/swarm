@@ -83,6 +83,4 @@ services:
         max_replicas_per_node: 1
         constraints:
           - node.role == manager
-        preferences:
-          - spread: node.labels.zone
     image: iconviet.azurecr.io/megaloop_production_job
