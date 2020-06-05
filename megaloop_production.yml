@@ -39,7 +39,7 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "production"
-      CITIZEN_URL: "http://172.18.0.1:9000"
+      CITIZEN_URL: "https://ctz.solidwallet.io"
       CONTRACT_ID: "cx7525d37107513415796e81326fc26a477721ab8c"
 
   #****
@@ -66,7 +66,7 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "production"
-      CITIZEN_URL: "http://172.18.0.1:9000"
+      CITIZEN_URL: "https://ctz.solidwallet.io"
       CONTRACT_ID: "cx7525d37107513415796e81326fc26a477721ab8c"
 
   #****
@@ -88,5 +88,5 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "production"
-      CITIZEN_URL: "http://172.18.0.1:9000"
+      CITIZEN_URL: "https://ctz.solidwallet.io"
       CONTRACT_ID: "cx7525d37107513415796e81326fc26a477721ab8c"
