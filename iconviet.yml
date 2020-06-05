@@ -258,7 +258,6 @@ services:
       resources:
         limits:
           cpus: '0.25'
-          memory: 2048M
       placement:
         constraints:
           - node.role == manager
