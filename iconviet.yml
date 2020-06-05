@@ -24,9 +24,6 @@ services:
       ACCEPT_EULA: "Y"
       TZ: "Asia/Ho_Chi_Minh"
     deploy:
-      resources:
-        limits:
-          memory: 1024M
       placement:
         constraints:
           - node.role == manager
@@ -47,9 +44,6 @@ services:
     volumes:
       - ~/mssql:/var/opt/mssql
     deploy:
-      resources:
-        limits:
-          memory: 8192M
       placement:
         constraints:
           - node.role == manager
@@ -75,9 +69,6 @@ services:
     volumes:
        - ~/redis:/var/lib/redis
     deploy:
-      resources:
-        limits:
-          memory: 4096M
       placement:
         constraints:
           - node.role == manager
@@ -126,9 +117,6 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     deploy:
-      resources:
-        limits:
-          memory: 4096M
       placement:
         constraints:
           - node.role == manager
@@ -172,9 +160,6 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
     deploy:
-      resources:
-        limits:
-          memory: 4096M
       placement:
         constraints:
           - node.role == manager
@@ -196,9 +181,6 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     image: iconviet/portainer
     deploy:
-      resources:
-        limits:
-          memory: 1024M
       placement:
         constraints:
           - node.role == manager
@@ -218,9 +200,6 @@ services:
       TZ: "Asia/Ho_Chi_Minh"
     image: iconviet/dockupdater
     deploy:
-      resources:
-        limits:
-          memory: 1024M
       placement:
         constraints:
           - node.role == manager
@@ -254,9 +233,6 @@ services:
        - ~/redis:/var/lib/redis
     deploy:
       replicas: 2
-      resources:
-        limits:
-          memory: 4096M
       placement:
         max_replicas_per_node: 1
         constraints:
