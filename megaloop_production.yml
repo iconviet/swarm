@@ -19,7 +19,7 @@ services:
       - mode: host
         target: 80
         protocol: tcp
-        published: 8510
+        published: 8610
     networks:
       - iconloop
       - iconviet
@@ -51,7 +51,7 @@ services:
       - mode: host
         target: 81
         protocol: tcp
-        published: 8511    
+        published: 8611    
     networks:
       - iconloop
       - iconviet
