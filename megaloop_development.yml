@@ -39,7 +39,8 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
-      CITIZEN_URL: "https://bicon.net.solidwallet.io"
+      CITIZEN_URL: "https://bicon.net.solidwallet.io",
+      TRACKER_URL: "https://bicon.net.solidwallet.io",
       CONTRACT_ID: "cxa6ba8f0730ad952b5898ac3e5e90a17e20574eff"
 
   #****
@@ -66,7 +67,8 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
-      CITIZEN_URL: "https://bicon.net.solidwallet.io"
+      CITIZEN_URL: "https://bicon.net.solidwallet.io",
+      TRACKER_URL: "https://bicon.net.solidwallet.io",
       CONTRACT_ID: "cxa6ba8f0730ad952b5898ac3e5e90a17e20574eff"
 
   #****
@@ -88,5 +90,6 @@ services:
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
-      CITIZEN_URL: "https://bicon.net.solidwallet.io"
+      CITIZEN_URL: "https://bicon.net.solidwallet.io",
+      TRACKER_URL: "https://bicon.net.solidwallet.io",
       CONTRACT_ID: "cxa6ba8f0730ad952b5898ac3e5e90a17e20574eff"
