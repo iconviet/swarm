@@ -1,0 +1,44 @@
+version: "3.8"
+
+networks:
+  iconloop:
+    external: true
+  iconviet:
+    external: true
+  iconviet_development:
+    external: true
+
+services:
+  
+  #*******
+  # SERVER
+  #*******
+  
+  server:
+    ports:
+      - mode: host
+        target: 80
+        protocol: tcp
+        published: 8320
+    networks:
+      - iconloop
+      - iconviet
+      - iconviet_development
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 1
+        preferences:
+          - spread: node.labels.zone
+    volumes:
+      - /etc/hostname:/etc/hostname:ro
+    command: >
+      sh -c "export HOSTNAME=`cat /etc/hostname` &&
+             dotnet IconIcps.Server.dll"
+    image: iconviet.azurecr.io/iconicps_development_server
+    environment:
+      TZ: "Asia/Ho_Chi_Minh"
+      ENVIRONMENT: "development"
+      CITIZEN_URL: "https://bicon.net.solidwallet.io"
+      TRACKER_URL: "https://bicon.net.solidwallet.io"
+      CONTRACT_ID: "cx5fb589f7133de81e708eeabc4dad6cd4b86eb130"

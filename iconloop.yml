@@ -43,3 +43,4 @@ services:
       LOOPCHAIN_LOG_LEVEL: "INFO"
       PRIVATE_PASSWORD: "Ico123!@#"
       PRIVATE_KEY_FILENAME: "citizen.keystore"
+      ENDPOINT_URL: "http://95.179.230.6:9000"
