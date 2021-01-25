@@ -34,8 +34,8 @@ services:
       - /etc/hostname:/etc/hostname:ro
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
-             dotnet IconIcps.Server.dll"
-    image: iconviet.azurecr.io/iconicps_development_server
+             dotnet Equality.Server.dll"
+    image: iconviet.azurecr.io/equality_development_server
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
