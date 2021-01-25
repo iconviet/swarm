@@ -10,11 +10,11 @@ networks:
 
 services:
   
-  #****
-  # WEB
-  #****
+  #*******
+  # SERVER
+  #*******
   
-  web:
+  server:
     ports:
       - mode: host
         target: 80
