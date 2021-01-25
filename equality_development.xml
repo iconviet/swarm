@@ -10,11 +10,11 @@ networks:
 
 services:
   
-  #*******
-  # SERVER
-  #*******
+  #****
+  # WEB
+  #****
   
-  server:
+  web:
     ports:
       - mode: host
         target: 80
@@ -35,7 +35,7 @@ services:
     command: >
       sh -c "export HOSTNAME=`cat /etc/hostname` &&
              dotnet Equality.Server.dll"
-    image: iconviet.azurecr.io/equality_development_server
+    image: iconviet.azurecr.io/equality_development_web
     environment:
       TZ: "Asia/Ho_Chi_Minh"
       ENVIRONMENT: "development"
