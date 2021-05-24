@@ -35,7 +35,7 @@ services:
           - spread: node.labels.zone
     environment:
       CERT_PATH: "/cert"
-      FASTEST_START: "yes"
+#     FASTEST_START: "yes"
       DEFAULT_PATH: "/data"
       TZ: "Asia/Ho_Chi_Minh"
       NETWORK_ENV: "mainnet"
@@ -43,4 +43,3 @@ services:
       LOOPCHAIN_LOG_LEVEL: "ERROR"
       PRIVATE_PASSWORD: "Ico123!@#"
       PRIVATE_KEY_FILENAME: "citizen.keystore"
-#     ENDPOINT_URL: "http://95.179.230.6:9000"
